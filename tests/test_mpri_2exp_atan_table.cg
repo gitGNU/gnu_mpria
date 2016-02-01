@@ -1,0 +1,99 @@
+## tests/test_mpri_2exp_atan_table.cg -- GAP master script
+## MPRIA - GNU Multi-Precision Rational Interval Arithmetic Library
+## Copyright (C) 2009-2016  Jerome Benoit <jgmbenoit@rezozer.net>
+##
+## This file is part of the GNU MPRIA Library.
+##
+## The GNU MPRIA Library is free software: you can redistribute it and/or modify it
+## under the terms of the GNU General Public License as published by
+## the Free Software Foundation, either version 3 of the License, or
+## (at your option) any later version.
+##
+## The GNU MPRIA Library is distributed in the hope that it will be useful,
+## but WITHOUT ANY WARRANTY; without even the implied warranty of
+## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+## GNU General Public License for more details.
+##
+## You should have received a copy of the GNU General Public License
+## along with the GNU MPRIA Library.  If not, see <http://www.gnu.org/licenses/>.
+##
+
+MPRIAMasterFileNameComment:=function() return ("not human readable"); end;;
+
+Read("mpria_test.gi");
+if (IsBound(MPRIAMasterFileName) and (MPRIAMasterFileName <> fail)) then
+
+listof_bits:=[
+	10,
+	24,
+	53,
+	113,
+	256,
+	512,
+	1024,
+	2048,
+	];
+
+listof_exponent:=[
+	0,
+	1,
+	2,
+	3,
+	4,
+	16,
+	];
+
+listof_candidate:=[
+	[0,0],
+	[+1,+1],
+	[+124145519261541/51422757785981,+124145519261543/51422757785981],
+	[-124145519261541/51422757785981,+124145519261543/51422757785981],
+	[-124145519261543/51422757785981,-124145519261541/51422757785981],
+	[+988249156564856/196574979293266,+988249156564858/196574979293266],
+	[-988249156564856/196574979293266,+988249156564858/196574979293266],
+	[-988249156564858/196574979293266,-988249156564856/196574979293266],
+	[+240714745000386851292848972172591645/5909215311060847167846167476692359,+240714745000386851292848972172591647/5909215311060847167846167476692359],
+	[-240714745000386851292848972172591647/5909215311060847167846167476692359,-240714745000386851292848972172591645/5909215311060847167846167476692359],
+	[+27553278418384340226321974940487/1122396128635116197295347909107229,+27553278418384340226321974940489/1122396128635116197295347909107229],
+	[+538666713754363972482835453879479448676/175577500044516718622238907027050738735611,
+		+538666713754363972482835453879479448678/175577500044516718622238907027050738735611],
+	[+49153512248327896072972053795471/1025379459223664701674086403506278231,
+		+49153512248327896072972053795473/1025379459223664701674086403506278231],
+	];
+
+## preamble
+MPRIACInputOpen();
+
+## amble
+MPRIACInputWriteTestTableLineBEGIN();
+
+for cdx in listof_candidate do
+	for bits in listof_bits do
+		cstr_bits:=String(bits);
+		SetFloats(MPFR,bits+32);
+		for exponent in listof_exponent do
+			cstr_exponent:=Concatenation(String(exponent),"UL");
+			mpf_expected:=2^exponent*[Atan(1.0*cdx[1]),Atan(1.0*cdx[2])];
+			AppendTo(CInputStream,
+				"\t{",
+				cstr_exponent,",",
+				SeqStringifyListOfNum(cdx),",",
+				cstr_bits,",",
+				SeqStringifyListOfNum(mpf_expected),
+				"},\n"
+				);
+		od;
+	od;
+od;
+
+MPRIACInputWriteTestTableLineEND("{ULONG_MAX,NULL,NULL,0,NULL,NULL}");
+
+## postamble
+MPRIACInputClose();
+
+fi;
+QUIT;
+##
+## vim:syntax=gap
+##
+## End of file tests/test_mpri_2exp_atan_table.cg

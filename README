@@ -1,0 +1,80 @@
+This is the README file for the GNU MPRIA Library distribution,
+MPRIA stands for Multi-Precision Rational Interval Arithmetic.
+
+  Copyright (C) 2009-2016  Jerome Benoit <jgmbenoit@rezozer.net>
+
+  Copying and distribution of this file, with or without modification,
+  are permitted in any medium without royalty provided the copyright
+  notice and this notice are preserved.
+
+Description:
+ GNU MPRIA is intended to be a portable mathematical library written in C
+ for rational interval arithmetic computations with arbitrary precision.
+
+ The basic principle of rational interval arithmetic consists in enclosing
+ every number by a rational interval containing it: each number is stored
+ as its lower and upper endpoints and these bounds are rational numbers;
+ their absolute difference measures the precision. The purpose is on the
+ right hand to obtain guaranteed results, thanks to interval computation,
+ and on the left hand to compute accurate results, thanks to arbitrary
+ precision arithmetic.
+
+ The arithmetic operations are extended for interval operands in such
+ a way that the exact result of the operation belongs to the computed
+ rational interval.
+
+ The GNU MPRIA library is built upon the GNU MP library for operating
+ on rational numbers; see http://gmplib.org/.
+
+Primary distribution point: ftp://ftp.gnu.org/gnu/mpria/
+ automatic redirection: http://ftpmirror.gnu.org/mpria/
+ list of mirrors for manual selection: http://www.gnu.org/prep/ftp.html
+
+Home page: http://www.gnu.org/software/mpria/
+
+Mailing list: bug-mpria@gnu.org
+ - please use this list for all discussion: bug reports, enhancements, etc.
+ - archived at: http://lists.gnu.org/pipermail/bug-mpria
+ - anyone is welcome to join the list; to do so, visit
+   http://lists.gnu.org/mailman/listinfo/bug-mpria/
+ - there is no corresponding newsgroup.
+
+Installation:
+ See the file ./INSTALL for building and installation instructions.
+
+Bug reports:
+ Please include enough information for the maintainers to reproduce the
+ problem. Generally speaking, that means:
+ - the contents of any input files necessary to reproduce the bug
+   and command line invocations of the program(s) involved (crucial!).
+ - a description of the problem and any samples of the erroneous output.
+ - the version number of the library involved (see mpria.h).
+ - hardware, operating system, and compiler versions (uname -a).
+ - unusual options you gave to configure, if any (see config.status).
+ - anything else that you think would be helpful.
+
+Patches: most welcome !
+ If possible, please make them with diff -u and include ChangeLog entries.
+
+Development environment:
+ See README-dev for information on the development environment -- any
+ interested parties are welcome.  If you're a programmer and wish to
+ contribute, this should get you started.  If you're not a programmer,
+ your help in writing test cases, checking the documentation against
+ the implementation, etc., would still be very much appreciated.
+
+License: GPL-3+
+ This package is free software; you can redistribute it and/or modify
+ it under the terms of the GNU General Public License as published by
+ the Free Software Foundation; either version 3 of the License, or
+ (at your option) any later version.
+
+ This package is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ GNU General Public License for more details.
+
+ You should have received a copy of the GNU General Public License
+ along with this package. If not, see http://www.gnu.org/licenses/.
+
+Enjoy !

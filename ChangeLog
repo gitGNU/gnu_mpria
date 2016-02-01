@@ -1,0 +1,29 @@
+2016-01-31 Jerome Benoit <jgmbenoit@rezozer.net>
+
+	* tests/test_random: Harden.
+	* automake: dist: Improve.
+	* Manual license: GFDL: Rephrase the "no invariant sections" part.
+	* Version 0.7.3
+
+2016-01-30 Jerome Benoit <jgmbenoit@rezozer.net>
+
+	* API: mpri_urandomm: Add.
+	* tests/test_random: Introduce.
+	* Manual: Update.
+	* Maintenance: Refresh.
+	* Version 0.7.2
+
+2014-02-03 Jerome Benoit <jgmbenoit@rezozer.net>
+
+	* tests/mpria_test.mi tests/test_mpria_*_table.cmpl: Remove:
+	  the Maple scripts has been replaced by GAP scripts.
+	* tests/mpria_{test,numtheory}.gi tests/test_mpria_*_table.cg: Add.
+	* Naming convention: Rationalise.
+	* API: Rationalise.
+	* Up-to-date Manual, doc/mpria.texi: Create.
+	* Version 0.7.1
+
+2014-01-04 Jerome Benoit <jgmbenoit@rezozer.net>
+
+	* Initial set up: Fork: from a locally owned library.
+	* Version 0.7.0

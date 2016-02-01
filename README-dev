@@ -1,0 +1,76 @@
+This is the README-dev file for the GNU MPRIA Library distribution,
+MPRIA stands for Multi-Precision Rational Interval Arithmetic.
+
+  Copyright (C) 2009-2016  Jerome Benoit <jgmbenoit@rezozer.net>
+
+  Copying and distribution of this file, with or without modification,
+  are permitted in any medium without royalty provided the copyright
+  notice and this notice are preserved.
+
+The development sources are available through git at Savannah:
+
+  https://savannah.gnu.org/git/?group=mpria
+
+
+Autotools
+---------
+
+This distribution uses recent versions of Automake, Autoconf and
+Libtool; usually the latest ones released. If you are getting the
+sources from git (or change configure.ac), you will need to have
+these tools installed to (re)build. The autotools programs are
+available from ftp://ftp.gnu.org/gnu/.
+
+
+Building
+--------
+
+After getting the git sources, and installing the tools above, you
+can run
+
+  autoreconf --install --force
+
+to do a fresh build. After that first time, running the shell command
+`./configure && make' should suffice.
+
+When modifying the sources, or making a distribution, more is needed, as
+follows:
+
+
+GAP
+---
+
+This distribution also uses a recent version of GAP (Groups, Algorithms and
+Programming --- a GPL Computer Algebra System) along with recent versions of
+the IO and float GAP packages to (re)generate the C input tables needed within
+the test suite; usually the latest ones released. The GAP software and packages
+are available from http://www.gap-system.org/.
+
+
+Valgrind
+--------
+
+The test suite that comes with the package transparently incorporates the
+debugging and profiling suite tool valgrind. Running the shell command
+`make check' should be sufficient. The valgrind suite of tools is available
+from http://valgrind.org/.
+
+
+Gnulib
+------
+
+This distribution contains two autoconf macro scripts imported by hand
+from a recent version of Gnulib, namely m4/ld-version-script.m4 and
+m4/valgrind-tests.m4. It might be necessary to update them by hand.
+The Gnulib material is available from http://www.gnu.org/software/gnulib/.
+
+
+GMP
+---
+
+This software library builds upon the GNU Multi-Precision library (GMP):
+it is hightly recommanded to install and to build against a recent version
+of the GMP library. The GMP library is available from http://gmplib.org/.
+
+
+Happy hacking !

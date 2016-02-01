@@ -1,0 +1,1076 @@
+/* mpria.h -- C header file */
+/*
+ * MPRIA - GNU Multi-Precision Rational Interval Arithmetic Library
+ * Copyright (C) 2009-2016  Jerome Benoit <jgmbenoit@rezozer.net>
+ *
+ * This file is part of the GNU MPRIA Library.
+ *
+ * The GNU MPRIA Library is free software: you can redistribute it and/or modify it
+ * under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * The GNU MPRIA Library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with the GNU MPRIA Library.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ */
+
+#ifndef __MPRIA_H__
+#define __MPRIA_H__
+
+/* MPRIA stringify macro */
+#define MPRIA_STRINGIFYx(Token) #Token
+#define MPRIA_STRINGIFY(Token) MPRIA_STRINGIFYx(Token)
+
+/* MPRIA authoritative version macros */
+#define MPRIA_VERSION_MAJOR @MPRIA_VERSION_MAJOR@ /* major version number */
+#define MPRIA_VERSION_MINOR @MPRIA_VERSION_MINOR@ /* minor version number or revision number */
+#define MPRIA_VERSION_MICRO @MPRIA_VERSION_MICRO@ /* micro version number or major patch level*/
+/* #define MPRIA_VERSION_NANO @MPRIA_VERSION_NANO@ */ /* nano version number or minor patch level*/
+#define MPRIA_VERSION_EXTRA @MPRIA_VERSION_EXTRA@ /* extra information as string */
+
+/* MPRIA version pack function-like macros */
+#define MPRIA_VERSION_NUMBER_PACK(a,b,c) (((a) << 16L) | ((b) << 8) | (c))
+#define MPRIA_VERSION_STRING_PACK(a,b,c,d) \
+	(MPRIA_STRINGIFY(a) "." MPRIA_STRINGIFY(b) "." MPRIA_STRINGIFY(c) d)
+
+/* MPRIA derived version macros */
+#define MPRIA_VERSION_NUMBER \
+	MPRIA_VERSION_NUMBER_PACK(MPRIA_VERSION_MAJOR,MPRIA_VERSION_MINOR,MPRIA_VERSION_MICRO)
+#define MPRIA_VERSION_STRING \
+	MPRIA_VERSION_STRING_PACK(MPRIA_VERSION_MAJOR,MPRIA_VERSION_MINOR,MPRIA_VERSION_MICRO,MPRIA_VERSION_EXTRA)
+
+#ifndef __GMP_H__
+#include <gmp.h>
+#endif /* __GMP_H__ */
+
+#define MPRI_PREC_BITS_NIL ULONG_MAX
+#define MPRI_PREC_BITS_HALF       11
+#define MPRI_PREC_BITS_SINGLE     24
+#define MPRI_PREC_BITS_DOUBLE     53
+#define MPRI_PREC_BITS_QUADRUPLE 113
+#define MPRI_PREC_BITS_OCTUPLE   237
+
+#undef __BEGIN_DECLS
+#undef __END_DECLS
+#ifdef __cplusplus
+# define __BEGIN_DECLS extern "C" {
+# define __END_DECLS }
+#else
+# define __BEGIN_DECLS /* empty */
+# define __END_DECLS /* empty */
+#endif
+
+__BEGIN_DECLS
+
+
+/* MP Rational Interval Arithmetic type */
+typedef struct {
+	__mpq_struct _mp_lep; /* Left EndPoint */
+	__mpq_struct _mp_rep; /* Right EndPoint */
+	} __mpri_struct;
+
+typedef __mpri_struct mpri_t[1];
+typedef const __mpri_struct *mpri_srcptr;
+typedef __mpri_struct *mpri_ptr;
+
+extern const mpz_t __mpria_z_zero;
+extern const mpz_t __mpria_z_pos_one;
+extern const mpz_t __mpria_z_neg_one;
+extern const mpz_t __mpria_z_pos_two;
+extern const mpz_t __mpria_z_neg_two;
+
+extern const mpq_t __mpria_q_zero;
+extern const mpq_t __mpria_q_pos_one;
+extern const mpq_t __mpria_q_neg_one;
+extern const mpq_t __mpria_q_pos_two;
+extern const mpq_t __mpria_q_neg_two;
+
+extern const mpri_t __mpria_ri_zero;
+extern const mpri_t __mpria_ri_pos_one;
+extern const mpri_t __mpria_ri_neg_one;
+
+#if __GMP_INLINE_PROTOTYPES || defined (__GMP_FORCE_mpria_mpz_sgn)
+int mpria_mpz_sgn(mpz_srcptr);
+#endif
+#if __GMP_INLINE_PROTOTYPES || defined (__GMP_FORCE_mpria_mpz_minabs3)
+void mpria_mpz_minabs3(mpz_ptr, mpz_srcptr, mpz_srcptr, mpz_srcptr);
+#endif
+
+#define MPRIA_MPZ_IS_ZERO(Z) ((((Z)->_mp_size) == 0)?1:0)
+#define MPRIA_MPZ_IS_NONZERO(Z) ((((Z)->_mp_size) == 0)?0:1)
+#define MPRIA_MPZ_IS_POSITIVE(Z) ((0 <= ((Z)->_mp_size))?1:0)
+#define MPRIA_MPZ_IS_NEGATIVE(Z) ((((Z)->_mp_size) <= 0)?1:0)
+#define MPRIA_MPZ_IS_STRICTLY_POSITIVE(Z) ((0 < ((Z)->_mp_size))?1:0)
+#define MPRIA_MPZ_IS_STRICTLY_NEGATIVE(Z) ((((Z)->_mp_size) < 0)?1:0)
+
+#define MPRIA_MPZ_SET_ZERO(Z) { mpz_set_ui((Z),0UL); }
+#define MPRIA_MPZ_SET_POS_ONE(Z) { mpz_set_ui((Z),1UL); }
+#define MPRIA_MPZ_SET_NEG_ONE(Z) { mpz_set_si((Z),-1L); }
+
+int mpria_mpz_exp_set_str(mpz_ptr, unsigned long int *, const char *, int);
+
+#if __GMP_INLINE_PROTOTYPES || defined (__GMP_FORCE_mpria_mpq_sgn)
+int mpria_mpq_sgn(mpq_srcptr);
+#endif
+int mpria_mpq_cmpabs(mpq_srcptr, mpq_srcptr);
+#if __GMP_INLINE_PROTOTYPES || defined (__GMP_FORCE_mpria_mpq_min3)
+void mpria_mpq_min3(mpq_ptr, mpq_srcptr, mpq_srcptr, mpq_srcptr);
+#endif
+
+#define MPRIA_MPQ_IS_ZERO(Q) ((((Q)->_mp_num._mp_size) == 0)?1:0)
+#define MPRIA_MPQ_IS_NONZERO(Q) ((((Q)->_mp_num._mp_size) == 0)?0:1)
+#define MPRIA_MPQ_IS_POSITIVE(Q) ((0 <= ((Q)->_mp_num._mp_size))?1:0)
+#define MPRIA_MPQ_IS_NEGATIVE(Q) ((((Q)->_mp_num._mp_size) <= 0)?1:0)
+#define MPRIA_MPQ_IS_STRICTLY_POSITIVE(Q) ((0 < ((Q)->_mp_num._mp_size))?1:0)
+#define MPRIA_MPQ_IS_STRICTLY_NEGATIVE(Q) ((((Q)->_mp_num._mp_size) < 0)?1:0)
+
+#define MPRIA_MPQ_SET_ZERO(Q) { mpq_set_ui((Q),0UL,1UL); }
+#define MPRIA_MPQ_SET_POS_ONE(Q) { mpq_set_ui((Q),1UL,1UL); }
+#define MPRIA_MPQ_SET_NEG_ONE(Q) { mpq_set_si((Q),-1L,1UL); }
+#define MPRIA_MPQ_SET_NAN(Q) { mpz_set_ui(mpq_numref(Q),0UL); mpz_set_ui(mpq_denref(Q),0UL); }
+#define MPRIA_MPQ_SET_POS_INF(Q) { mpz_set_ui(mpq_numref(Q),1UL); mpz_set_ui(mpq_denref(Q),0UL); }
+#define MPRIA_MPQ_SET_NEG_INF(Q) { mpz_set_si(mpq_numref(Q),-1L); mpz_set_ui(mpq_denref(Q),0UL); }
+
+int mpria_mpq_set_str(mpq_ptr, const char *, int);
+
+#if __GMP_INLINE_PROTOTYPES || defined (__GMP_FORCE_mpria_mpq_is_nan)
+int mpria_mpq_is_nan(mpq_srcptr);
+#endif
+#if __GMP_INLINE_PROTOTYPES || defined (__GMP_FORCE_mpria_mpq_is_infinite)
+int mpria_mpq_is_infinite(mpq_srcptr);
+#endif
+#if __GMP_INLINE_PROTOTYPES || defined (__GMP_FORCE_mpria_mpq_is_finite)
+int mpria_mpq_is_finite(mpq_srcptr);
+#endif
+
+/* ASsiGnMenT modes */
+typedef enum {
+	MPRI_ASGMT_OL=-1, /* assign Only Left endpoint */
+	MPRI_ASGMT_LR=0,  /* assign Left and Right endpoints */
+	MPRI_ASGMT_OR=+1  /* assign Only Right endpoint */
+	} mpri_asgmt_t;
+
+/* SurRouNDing modes */
+typedef enum {
+	MPRI_SRND_BCAL=-1, /* Best Convert At Left endpoint */
+	MPRI_SRND_BCAA=0,  /* Best Convert At Any endpoint */
+	MPRI_SRND_BCAR=+1  /* Best Convert At Right endpoint */
+	} mpri_srnd_t;
+
+/* PRECision type (mpq_div_2exp exponant type) */
+typedef unsigned long int mpri_prec_t;
+
+#define mpri_lepref(RIA) (&((RIA)->_mp_lep))
+#define mpri_repref(RIA) (&((RIA)->_mp_rep))
+
+#if __GMP_INLINE_PROTOTYPES || defined (__GMP_FORCE_mpri_init)
+void mpri_init(mpri_ptr);
+#endif
+#if __GMP_INLINE_PROTOTYPES || defined (__GMP_FORCE_mpri_clear)
+void mpri_clear(mpri_ptr);
+#endif
+
+#if __GMP_INLINE_PROTOTYPES || defined (__GMP_FORCE_mpri_set)
+void mpri_set(mpri_ptr, mpri_srcptr);
+#endif
+
+#define MPRI_SET_ZERO(RIA) { MPRIA_MPQ_SET_ZERO(mpri_lepref(RIA)); MPRIA_MPQ_SET_ZERO(mpri_repref(RIA)); }
+#define MPRI_SET_NAN(RIA)  { MPRIA_MPQ_SET_NAN(mpri_lepref(RIA)); MPRIA_MPQ_SET_NAN(mpri_repref(RIA)); }
+#define MPRI_SET_Q(RIA,Q)  { mpq_set(mpri_lepref(RIA),Q); mpq_set(mpri_repref(RIA),Q); }
+
+/* Quadratic Irrational (a+sqrt(b))/c */
+void mpri_set_qi_z_ASGMT(mpri_ptr, mpz_srcptr, mpz_srcptr, mpz_srcptr, mpri_prec_t, mpri_srnd_t, mpri_asgmt_t);
+#define mpri_set_qi_z( ... ) mpri_set_qi_z_ASGMT( __VA_ARGS__ , MPRI_ASGMT_LR )
+#if __GMP_INLINE_PROTOTYPES || defined (__GMP_FORCE_mpri_set_qi_q)
+void mpri_set_qi_q(mpri_ptr, mpq_srcptr, mpq_srcptr, mpq_srcptr, mpri_prec_t, mpri_srnd_t);
+#endif
+/* rational */
+#if __GMP_INLINE_PROTOTYPES || defined (__GMP_FORCE_mpri_set_q)
+void mpri_set_q(mpri_ptr, mpq_srcptr, mpri_prec_t, mpri_srnd_t);
+#endif
+/* double */
+#if __GMP_INLINE_PROTOTYPES || defined (__GMP_FORCE_mpri_set_d)
+void mpri_set_d(mpri_ptr, double, mpri_prec_t, mpri_srnd_t);
+#endif
+/* SQuareRooT sqrt(a) */
+#if __GMP_INLINE_PROTOTYPES || defined (__GMP_FORCE_mpri_set_sqrt_q)
+void mpri_set_sqrt_q(mpri_ptr, mpq_srcptr, mpri_prec_t, mpri_srnd_t);
+#endif
+/* Reciprocal SQuareRooT 1/sqrt(a) */
+#if __GMP_INLINE_PROTOTYPES || defined (__GMP_FORCE_mpri_set_rsqrt_q)
+void mpri_set_rsqrt_q(mpri_ptr, mpq_srcptr, mpri_prec_t, mpri_srnd_t);
+#endif
+
+#if __GMP_INLINE_PROTOTYPES || defined (__GMP_FORCE_mpri_swap)
+void mpri_swap(mpri_ptr, mpri_ptr);
+#endif
+
+#if __GMP_INLINE_PROTOTYPES || defined (__GMP_FORCE_mpri_diam_abs)
+void mpri_diam_abs(mpq_ptr, mpri_srcptr);
+#endif
+void mpri_diam_rel(mpq_ptr, mpri_srcptr);
+#if __GMP_INLINE_PROTOTYPES || defined (__GMP_FORCE_mpri_diam)
+void mpri_diam(mpq_ptr, mpri_srcptr);
+#endif
+
+#if __GMP_INLINE_PROTOTYPES || defined (__GMP_FORCE_mpri_mig)
+void mpri_mig(mpq_ptr, mpri_srcptr);
+#endif
+#if __GMP_INLINE_PROTOTYPES || defined (__GMP_FORCE_mpri_mag)
+void mpri_mag(mpq_ptr, mpri_srcptr);
+#endif
+
+#if __GMP_INLINE_PROTOTYPES || defined (__GMP_FORCE_mpri_mid)
+void mpri_mid(mpq_ptr, mpri_srcptr);
+#endif
+
+#if __GMP_INLINE_PROTOTYPES || defined (__GMP_FORCE_mpri_get_q)
+void mpri_get_q(mpq_ptr, mpri_srcptr);
+#endif
+
+void mpri_urandomm(mpq_ptr, mpri_srcptr, gmp_randstate_t);
+
+double mpri_get_d(mpri_srcptr);
+
+#if __GMP_INLINE_PROTOTYPES || defined (__GMP_FORCE_mpri_add)
+void mpri_add(mpri_ptr, mpri_srcptr, mpri_srcptr);
+#endif
+#if __GMP_INLINE_PROTOTYPES || defined (__GMP_FORCE_mpri_sub)
+void mpri_sub(mpri_ptr, mpri_srcptr, mpri_srcptr);
+#endif
+void mpri_mul(mpri_ptr, mpri_srcptr, mpri_srcptr);
+void mpri_div(mpri_ptr, mpri_srcptr, mpri_srcptr);
+
+#if __GMP_INLINE_PROTOTYPES || defined (__GMP_FORCE_mpri_add_q)
+void mpri_add_q(mpri_ptr, mpri_srcptr, mpq_srcptr);
+#endif
+#if __GMP_INLINE_PROTOTYPES || defined (__GMP_FORCE_mpri_sub_q)
+void mpri_sub_q(mpri_ptr, mpri_srcptr, mpq_srcptr);
+#endif
+#if __GMP_INLINE_PROTOTYPES || defined (__GMP_FORCE_mpri_q_sub)
+void mpri_q_sub(mpri_ptr, mpq_srcptr, mpri_srcptr);
+#endif
+#if __GMP_INLINE_PROTOTYPES || defined (__GMP_FORCE_mpri_mul_q)
+void mpri_mul_q(mpri_ptr, mpri_srcptr, mpq_srcptr);
+#endif
+#if __GMP_INLINE_PROTOTYPES || defined (__GMP_FORCE_mpri_mul_2exp)
+void mpri_mul_2exp(mpri_ptr, mpri_srcptr, unsigned long int);
+#endif
+#if __GMP_INLINE_PROTOTYPES || defined (__GMP_FORCE_mpri_div_q)
+void mpri_div_q(mpri_ptr, mpri_srcptr, mpq_srcptr);
+#endif
+#if __GMP_INLINE_PROTOTYPES || defined (__GMP_FORCE_mpri_q_div)
+void mpri_q_div(mpri_ptr, mpq_srcptr, mpri_srcptr);
+#endif
+#if __GMP_INLINE_PROTOTYPES || defined (__GMP_FORCE_mpri_div_2exp)
+void mpri_div_2exp(mpri_ptr, mpri_srcptr, unsigned long int);
+#endif
+
+#if __GMP_INLINE_PROTOTYPES || defined (__GMP_FORCE_mpri_neg)
+void mpri_neg(mpri_ptr, mpri_srcptr);
+#endif
+#if __GMP_INLINE_PROTOTYPES || defined (__GMP_FORCE_mpri_abs)
+void mpri_abs(mpri_ptr, mpri_srcptr);
+#endif
+#if __GMP_INLINE_PROTOTYPES || defined (__GMP_FORCE_mpri_inv)
+void mpri_inv(mpri_ptr, mpri_srcptr);
+#endif
+#if __GMP_INLINE_PROTOTYPES || defined (__GMP_FORCE_mpri_sqr)
+void mpri_sqr(mpri_ptr, mpri_srcptr);
+#endif
+
+#if __GMP_INLINE_PROTOTYPES || defined (__GMP_FORCE_mpri_sqrt)
+void mpri_sqrt(mpri_ptr, mpri_srcptr, mpri_prec_t);
+#endif
+#if __GMP_INLINE_PROTOTYPES || defined (__GMP_FORCE_mpri_rsqrt)
+void mpri_rsqrt(mpri_ptr, mpri_srcptr, mpri_prec_t);
+#endif
+
+void mpri_2exp_atan(mpri_ptr, unsigned long int, mpri_srcptr, mpri_prec_t);
+#if __GMP_INLINE_PROTOTYPES || defined (__GMP_FORCE_mpri_atan)
+void mpri_atan(mpri_ptr, mpri_srcptr, mpri_prec_t);
+#endif
+
+#if __GMP_INLINE_PROTOTYPES || defined (__GMP_FORCE_mpri_equal)
+int mpri_equal(mpri_srcptr, mpri_srcptr);
+#endif
+
+#if __GMP_INLINE_PROTOTYPES || defined (__GMP_FORCE_mpri_is_zero)
+int mpri_is_zero(mpri_srcptr);
+#endif
+#if __GMP_INLINE_PROTOTYPES || defined (__GMP_FORCE_mpri_is_nonzero)
+int mpri_is_nonzero(mpri_srcptr);
+#endif
+#if __GMP_INLINE_PROTOTYPES || defined (__GMP_FORCE_mpri_has_zero)
+int mpri_has_zero(mpri_srcptr);
+#endif
+#if __GMP_INLINE_PROTOTYPES || defined (__GMP_FORCE_mpri_hasnot_zero)
+int mpri_hasnot_zero(mpri_srcptr);
+#endif
+
+#if __GMP_INLINE_PROTOTYPES || defined (__GMP_FORCE_mpri_get_left)
+void mpri_get_left(mpq_ptr, mpri_srcptr);
+#endif
+#if __GMP_INLINE_PROTOTYPES || defined (__GMP_FORCE_mpri_get_right)
+void mpri_get_right(mpq_ptr, mpri_srcptr);
+#endif
+
+
+/**************** mpria inlines ****************/
+
+#if defined (__GMP_EXTERN_INLINE) || defined (__GMP_FORCE_mpria_mpz_sgn)
+#if ! defined (__GMP_FORCE_mpria_mpz_sgn)
+__GMP_EXTERN_INLINE
+#endif
+int mpria_mpz_sgn(mpz_srcptr z) {
+	const int sizeof_z=z->_mp_size;
+	return ((sizeof_z<0)?-1:(0<sizeof_z)?+1:0); }
+#endif
+
+#if defined (__GMP_EXTERN_INLINE) || defined (__GMP_FORCE_mpria_mpz_minabs3)
+#if ! defined (__GMP_FORCE_mpria_mpz_minabs3)
+__GMP_EXTERN_INLINE
+#endif
+void mpria_mpz_minabs3(mpz_ptr a, mpz_srcptr b, mpz_srcptr c, mpz_srcptr d) {
+	if ((mpz_cmpabs(c,d)) <= 0) { /* (|c| <= |d|) */
+		if ((mpz_cmpabs(b,c)) <= 0) { /* (|b| <= |c| <= |d|) */
+			mpz_abs(a,b);
+			}
+		else { /* (|c| < |b|) and (|c| <= |d|) */
+			mpz_abs(a,c);
+			}
+		}
+	else { /* (|d| < |c|) */
+		if ((mpz_cmpabs(b,d)) <=0) { /* (|b| <= |d| < |c|) */
+			mpz_abs(a,b);
+			}
+		else { /* (|d| < |b|) and (|d| < |c|) */
+			mpz_abs(a,d);
+			}
+		}
+	return ; }
+#endif
+
+#if defined (__GMP_EXTERN_INLINE) || defined (__GMP_FORCE_mpria_mpq_sgn)
+#if ! defined (__GMP_FORCE_mpria_mpq_sgn)
+__GMP_EXTERN_INLINE
+#endif
+int mpria_mpq_sgn(mpq_srcptr q) {
+	const int sizeof_q_num=q->_mp_num._mp_size;
+	return ((sizeof_q_num<0)?-1:(0<sizeof_q_num)?+1:0); }
+#endif
+
+#if defined (__GMP_EXTERN_INLINE) || defined (__GMP_FORCE_mpria_mpq_min3)
+#if ! defined (__GMP_FORCE_mpria_mpq_min3)
+__GMP_EXTERN_INLINE
+#endif
+void mpria_mpq_min3(mpq_ptr a, mpq_srcptr b, mpq_srcptr c, mpq_srcptr d) {
+	if ((mpq_cmp(c,d)) <= 0) { /* (c <= d) */
+		if ((mpq_cmp(b,c)) <= 0) { /* (b <= c <= d) */
+			if (a != b) {
+				mpq_set(a,b);
+				}
+			}
+		else { /* (c < b) and (c <= d) */
+			if (a != c) {
+				mpq_set(a,c);
+				}
+			}
+		}
+	else { /* (d < c) */
+		if ((mpq_cmp(b,d)) <=0) { /* (b <= d < c) */
+			if (a != b) {
+				mpq_set(a,b);
+				}
+			}
+		else { /* (d < b) and (d < c) */
+			if (a != d) {
+				mpq_set(a,d);
+				}
+			}
+		}
+	return ; }
+#endif
+
+#if defined (__GMP_EXTERN_INLINE) || defined (__GMP_FORCE_mpria_mpq_is_nan)
+#if ! defined (__GMP_FORCE_mpria_mpq_is_nan)
+__GMP_EXTERN_INLINE
+#endif
+int mpria_mpq_is_nan(mpq_srcptr q) {
+	const int sizeof_q_den=q->_mp_den._mp_size;
+	if (sizeof_q_den == 0) { /* not finite */
+		const int sizeof_q_num=q->_mp_num._mp_size;
+		if (!(sizeof_q_num)) {
+			return (+1);
+			}
+		}
+	return (0); }
+#endif
+
+#if defined (__GMP_EXTERN_INLINE) || defined (__GMP_FORCE_mpria_mpq_is_infinite)
+#if ! defined (__GMP_FORCE_mpria_mpq_is_infinite)
+__GMP_EXTERN_INLINE
+#endif
+int mpria_mpq_is_infinite(mpq_srcptr q) {
+	const int sizeof_q_den=q->_mp_den._mp_size;
+	if (sizeof_q_den == 0) { /* not finite */
+		const int sizeof_q_num=q->_mp_num._mp_size;
+		if (sizeof_q_num) { /* infinite */
+			if (0 < sizeof_q_num) {
+				return (+1);
+				}
+			else { /* (sizeof_q_num < 0) */
+				return (-1);
+				}
+			}
+#if 0
+		else { /* nan */
+			return (0);
+			}
+#endif
+		}
+	return (0); }
+#endif
+
+#if defined (__GMP_EXTERN_INLINE) || defined (__GMP_FORCE_mpria_mpq_is_finite)
+#if ! defined (__GMP_FORCE_mpria_mpq_is_finite)
+__GMP_EXTERN_INLINE
+#endif
+int mpria_mpq_is_finite(mpq_srcptr q) {
+	return (((q->_mp_den._mp_size)==0)?0:1); }
+#endif
+
+#if defined (__GMP_EXTERN_INLINE) || defined (__GMP_FORCE_mpri_init)
+#if ! defined (__GMP_FORCE_mpri_init)
+__GMP_EXTERN_INLINE
+#endif
+void mpri_init(mpri_t a) {
+	mpq_init(mpri_lepref(a));
+	mpq_init(mpri_repref(a));
+	return ; }
+#endif
+
+#if defined (__GMP_EXTERN_INLINE) || defined (__GMP_FORCE_mpri_clear)
+#if ! defined (__GMP_FORCE_mpri_clear)
+__GMP_EXTERN_INLINE
+#endif
+void mpri_clear(mpri_t a) {
+	mpq_clear(mpri_lepref(a));
+	mpq_clear(mpri_repref(a));
+	return ; }
+#endif
+
+#if defined (__GMP_EXTERN_INLINE) || defined (__GMP_FORCE_mpri_set)
+#if ! defined (__GMP_FORCE_mpri_set)
+__GMP_EXTERN_INLINE
+#endif
+void mpri_set(mpri_t a, mpri_srcptr b) {
+	if (a != b) {
+		mpq_set(mpri_lepref(a),mpri_lepref(b));
+		mpq_set(mpri_repref(a),mpri_repref(b));
+		}
+	return ; }
+#endif
+
+#if defined (__GMP_EXTERN_INLINE) || defined (__GMP_FORCE_mpri_set_qi_q)
+#if ! defined (__GMP_FORCE_mpri_set_qi_q)
+__GMP_EXTERN_INLINE
+#endif
+void mpri_set_qi_q(mpri_ptr a, mpq_srcptr b, mpq_srcptr c, mpq_srcptr d, mpri_prec_t bits, mpri_srnd_t srnd_mode) {
+	mpz_mul(mpq_numref(mpri_lepref(a)),mpq_denref(c),mpq_denref(d));
+	mpz_mul(mpq_numref(mpri_lepref(a)),mpq_numref(mpri_lepref(a)),mpq_numref(b));
+	mpz_mul(mpq_denref(mpri_lepref(a)),mpq_denref(b),mpq_denref(d));
+	mpz_mul(mpq_denref(mpri_lepref(a)),mpq_denref(mpri_lepref(a)),mpq_denref(mpri_lepref(a)));
+	mpz_mul(mpq_denref(mpri_lepref(a)),mpq_denref(mpri_lepref(a)),mpq_numref(c));
+	mpz_mul(mpq_denref(mpri_lepref(a)),mpq_denref(mpri_lepref(a)),mpq_denref(c));
+	mpz_mul(mpq_numref(mpri_repref(a)),mpq_denref(b),mpq_denref(c));
+	mpz_mul(mpq_numref(mpri_repref(a)),mpq_numref(mpri_repref(a)),mpq_numref(d));
+	mpri_set_qi_z_ASGMT(a,mpq_numref(mpri_lepref(a)),mpq_denref(mpri_lepref(a)),mpq_numref(mpri_repref(a)),bits,srnd_mode,MPRI_ASGMT_LR);
+	return ; }
+#endif
+
+#if defined (__GMP_EXTERN_INLINE) || defined (__GMP_FORCE_mpri_set_q)
+#if ! defined (__GMP_FORCE_mpri_set_q)
+__GMP_EXTERN_INLINE
+#endif
+void mpri_set_q(mpri_ptr a, mpq_srcptr b, mpri_prec_t bits, mpri_srnd_t srnd_mode) {
+	mpri_set_qi_z_ASGMT(a,mpq_numref(b),__mpria_z_zero,mpq_denref(b),bits,srnd_mode,MPRI_ASGMT_LR);
+	return ; }
+#endif
+
+#if defined (__GMP_EXTERN_INLINE) || defined (__GMP_FORCE_mpri_set_d)
+#if ! defined (__GMP_FORCE_mpri_set_d)
+__GMP_EXTERN_INLINE
+#endif
+void mpri_set_d(mpri_ptr a, double b, mpri_prec_t bits, mpri_srnd_t srnd_mode) {
+	mpq_set_d(mpri_lepref(a),b);
+	mpri_set_qi_z_ASGMT(a,mpq_numref(mpri_lepref(a)),__mpria_z_zero,mpq_denref(mpri_lepref(a)),bits,srnd_mode,MPRI_ASGMT_LR);
+	return ; }
+#endif
+
+#if defined (__GMP_EXTERN_INLINE) || defined (__GMP_FORCE_mpri_set_sqrt_q)
+#if ! defined (__GMP_FORCE_mpri_set_sqrt_q)
+__GMP_EXTERN_INLINE
+#endif
+void mpri_set_sqrt_q(mpri_ptr a, mpq_srcptr b, mpri_prec_t bits, mpri_srnd_t srnd_mode) {
+	mpz_mul(mpq_numref(mpri_lepref(a)),mpq_numref(b),mpq_denref(b));
+	mpri_set_qi_z_ASGMT(a,__mpria_z_zero,mpq_numref(mpri_lepref(a)),mpq_denref(b),bits,srnd_mode,MPRI_ASGMT_LR);
+	return ; }
+#endif
+
+#if defined (__GMP_EXTERN_INLINE) || defined (__GMP_FORCE_mpri_set_rsqrt_q)
+#if ! defined (__GMP_FORCE_mpri_set_rsqrt_q)
+__GMP_EXTERN_INLINE
+#endif
+void mpri_set_rsqrt_q(mpri_ptr a, mpq_srcptr b, mpri_prec_t bits, mpri_srnd_t srnd_mode) {
+	mpz_mul(mpq_numref(mpri_lepref(a)),mpq_numref(b),mpq_denref(b));
+	mpri_set_qi_z_ASGMT(a,__mpria_z_zero,mpq_numref(mpri_lepref(a)),mpq_numref(b),bits,srnd_mode,MPRI_ASGMT_LR);
+	return ; }
+#endif
+
+#if defined (__GMP_EXTERN_INLINE) || defined (__GMP_FORCE_mpri_swap)
+#if ! defined (__GMP_FORCE_mpri_swap)
+__GMP_EXTERN_INLINE
+#endif
+void mpri_swap(mpri_ptr a, mpri_ptr b) {
+	mpq_swap(mpri_lepref(a),mpri_lepref(b));
+	mpq_swap(mpri_repref(a),mpri_repref(b));
+	return ; }
+#endif
+
+#if defined (__GMP_EXTERN_INLINE) || defined (__GMP_FORCE_mpri_diam_abs)
+#if ! defined (__GMP_FORCE_mpri_diam_abs)
+__GMP_EXTERN_INLINE
+#endif
+void mpri_diam_abs(mpq_ptr a, mpri_srcptr b) {
+	mpq_sub(a,mpri_repref(b),mpri_lepref(b));
+	return ; }
+#endif
+
+#if defined (__GMP_EXTERN_INLINE) || defined (__GMP_FORCE_mpri_diam)
+#if ! defined (__GMP_FORCE_mpri_diam)
+__GMP_EXTERN_INLINE
+#endif
+void mpri_diam(mpq_ptr a, mpri_srcptr b) {
+	if (mpri_has_zero(b)) {
+		mpri_diam_abs(a,b);
+		}
+	else {
+		mpri_diam_rel(a,b);
+		}
+	return ; }
+#endif
+
+#if defined (__GMP_EXTERN_INLINE) || defined (__GMP_FORCE_mpri_mig)
+#if ! defined (__GMP_FORCE_mpri_mig)
+__GMP_EXTERN_INLINE
+#endif
+void mpri_mig(mpq_ptr a, mpri_srcptr b) {
+	const int signof_lepof_b=mpria_mpq_sgn(mpri_lepref(b));
+	const int signof_repof_b=mpria_mpq_sgn(mpri_repref(b));
+	if (0 < signof_lepof_b) { /* 0 < lepof_b <= repof_b */
+		mpq_set(a,mpri_lepref(b));
+		}
+	else if (signof_repof_b < 0) { /* lepof_b <= repof_b < 0 */
+		mpq_neg(a,mpri_repref(b));
+		}
+	else { /* lepof_b <= 0 <= repof_b */
+		MPRIA_MPQ_SET_ZERO(a);
+		}
+	return ; }
+#endif
+
+#if defined (__GMP_EXTERN_INLINE) || defined (__GMP_FORCE_mpri_mag)
+#if ! defined (__GMP_FORCE_mpri_mag)
+__GMP_EXTERN_INLINE
+#endif
+void mpri_mag(mpq_ptr a, mpri_srcptr b) {
+	const int signof_lepof_b=mpria_mpq_sgn(mpri_lepref(b));
+	const int signof_repof_b=mpria_mpq_sgn(mpri_repref(b));
+	if (0 < signof_lepof_b) { /* 0 < lepof_b <= repof_b */
+		mpq_set(a,mpri_repref(b));
+		}
+	else if (signof_repof_b < 0) { /* lepof_b <= repof_b < 0 */
+		mpq_neg(a,mpri_lepref(b));
+		}
+	else { /* lepof_b <= 0 <= repof_b */
+		mpq_neg(a,mpri_lepref(b));
+		if (0 < mpq_cmp(a,mpri_repref(b))) { /* |lepof_b| < |repof_b| */
+			mpq_set(a,mpri_repref(b));
+			}
+		}
+	return ; }
+#endif
+
+#if defined (__GMP_EXTERN_INLINE) || defined (__GMP_FORCE_mpri_mid)
+#if ! defined (__GMP_FORCE_mpri_mid)
+__GMP_EXTERN_INLINE
+#endif
+void mpri_mid(mpq_ptr a, mpri_srcptr b) {
+	mpq_add(a,mpri_lepref(b),mpri_repref(b));
+	mpq_div_2exp(a,a,1UL);
+	return ; }
+#endif
+
+#if defined (__GMP_EXTERN_INLINE) || defined (__GMP_FORCE_mpri_get_q)
+#if ! defined (__GMP_FORCE_mpri_get_q)
+__GMP_EXTERN_INLINE
+#endif
+void mpri_get_q(mpq_ptr a, mpri_srcptr b) {
+	mpq_add(a,mpri_lepref(b),mpri_repref(b));
+	mpq_div_2exp(a,a,1UL);
+	return ; }
+#endif
+
+#if defined (__GMP_EXTERN_INLINE) || defined (__GMP_FORCE_mpri_add)
+#if ! defined (__GMP_FORCE_mpri_add)
+__GMP_EXTERN_INLINE
+#endif
+void mpri_add(mpri_ptr a, mpri_srcptr b, mpri_srcptr c) {
+	mpq_add(mpri_lepref(a),mpri_lepref(b),mpri_lepref(c));
+	mpq_add(mpri_repref(a),mpri_repref(b),mpri_repref(c));
+	return ; }
+#endif
+
+#if defined (__GMP_EXTERN_INLINE) || defined (__GMP_FORCE_mpri_sub)
+#if ! defined (__GMP_FORCE_mpri_sub)
+__GMP_EXTERN_INLINE
+#endif
+void mpri_sub(mpri_ptr a, mpri_srcptr b, mpri_srcptr c) {
+	if (b != c) {
+		if (a != c) { /* (a != c) and (b != c) */
+			mpq_sub(mpri_lepref(a),mpri_lepref(b),mpri_repref(c));
+			mpq_sub(mpri_repref(a),mpri_repref(b),mpri_lepref(c));
+			}
+		else { /* (a == c) and (b != c) */
+			mpq_swap(mpri_lepref(a),mpri_repref(a));
+			mpq_sub(mpri_lepref(a),mpri_lepref(b),mpri_lepref(a));
+			mpq_sub(mpri_repref(a),mpri_repref(b),mpri_repref(a));
+			}
+		}
+	else { /* (b == c) */
+		mpq_sub(mpri_lepref(a),mpri_lepref(b),mpri_repref(b));
+		mpq_neg(mpri_repref(a),mpri_lepref(a));
+		}
+	return ; }
+#endif
+
+#if defined (__GMP_EXTERN_INLINE) || defined (__GMP_FORCE_mpri_add_q)
+#if ! defined (__GMP_FORCE_mpri_add_q)
+__GMP_EXTERN_INLINE
+#endif
+void mpri_add_q(mpri_ptr a, mpri_srcptr b, mpq_srcptr c) {
+	mpq_add(mpri_lepref(a),mpri_lepref(b),c);
+	mpq_add(mpri_repref(a),mpri_repref(b),c);
+	return ; }
+#endif
+
+#if defined (__GMP_EXTERN_INLINE) || defined (__GMP_FORCE_mpri_sub_q)
+#if ! defined (__GMP_FORCE_mpri_sub_q)
+__GMP_EXTERN_INLINE
+#endif
+void mpri_sub_q(mpri_ptr a, mpri_srcptr b, mpq_srcptr c) {
+	mpq_sub(mpri_lepref(a),mpri_lepref(b),c);
+	mpq_sub(mpri_repref(a),mpri_repref(b),c);
+	return ; }
+#endif
+
+#if defined (__GMP_EXTERN_INLINE) || defined (__GMP_FORCE_mpri_q_sub)
+#if ! defined (__GMP_FORCE_mpri_q_sub)
+__GMP_EXTERN_INLINE
+#endif
+void mpri_q_sub(mpri_ptr a, mpq_srcptr b, mpri_srcptr c) {
+	if (a != c) {
+		mpq_sub(mpri_lepref(a),b,mpri_repref(c));
+		mpq_sub(mpri_repref(a),b,mpri_lepref(c));
+		}
+	else { /* (a == c) */
+		mpq_swap(mpri_lepref(a),mpri_repref(a));
+		mpq_sub(mpri_lepref(a),b,mpri_lepref(a));
+		mpq_sub(mpri_repref(a),b,mpri_repref(a));
+		}
+	return ; }
+#endif
+
+#if defined (__GMP_EXTERN_INLINE) || defined (__GMP_FORCE_mpri_mul_q)
+#if ! defined (__GMP_FORCE_mpri_mul_q)
+__GMP_EXTERN_INLINE
+#endif
+void mpri_mul_q(mpri_ptr a, mpri_srcptr b, mpq_srcptr c) {
+	const int signof_c=mpria_mpq_sgn(c);
+	if (0 < signof_c) {
+		mpq_mul(mpri_lepref(a),mpri_lepref(b),c);
+		mpq_mul(mpri_repref(a),mpri_repref(b),c);
+		}
+	else if (signof_c < 0) {
+		if (a != b) {
+			mpq_mul(mpri_lepref(a),mpri_repref(b),c);
+			mpq_mul(mpri_repref(a),mpri_lepref(b),c);
+			}
+		else { /* (a == b) */
+			mpq_swap(mpri_lepref(a),mpri_repref(a));
+			mpq_mul(mpri_lepref(a),mpri_lepref(a),c);
+			mpq_mul(mpri_repref(a),mpri_repref(a),c);
+			}
+		}
+	else { /* (signof_c == 0) */
+		MPRI_SET_ZERO(a);
+		}
+	return ; }
+#endif
+
+#if defined (__GMP_EXTERN_INLINE) || defined (__GMP_FORCE_mpri_mul_2exp)
+#if ! defined (__GMP_FORCE_mpri_mul_2exp)
+__GMP_EXTERN_INLINE
+#endif
+void mpri_mul_2exp(mpri_ptr a, mpri_srcptr b, unsigned long int n) {
+	mpq_mul_2exp(mpri_lepref(a),mpri_lepref(b),n);
+	mpq_mul_2exp(mpri_repref(a),mpri_repref(b),n);
+	return ; }
+#endif
+
+#if defined (__GMP_EXTERN_INLINE) || defined (__GMP_FORCE_mpri_div_q)
+#if ! defined (__GMP_FORCE_mpri_div_q)
+__GMP_EXTERN_INLINE
+#endif
+void mpri_div_q(mpri_ptr a, mpri_srcptr b, mpq_srcptr c) {
+	const int signof_c=mpria_mpq_sgn(c);
+	if (0 < signof_c) {
+		mpq_div(mpri_lepref(a),mpri_lepref(b),c);
+		mpq_div(mpri_repref(a),mpri_repref(b),c);
+		}
+	else if (signof_c < 0) {
+		if (a != b) {
+			mpq_div(mpri_lepref(a),mpri_repref(b),c);
+			mpq_div(mpri_repref(a),mpri_lepref(b),c);
+			}
+		else { /* (a == b) */
+			mpq_swap(mpri_lepref(a),mpri_repref(a));
+			mpq_div(mpri_lepref(a),mpri_lepref(a),c);
+			mpq_div(mpri_repref(a),mpri_repref(a),c);
+			}
+		}
+	else { /* (signof_c == 0) */
+		MPRI_SET_NAN(a);
+		}
+	return ; }
+#endif
+
+#if defined (__GMP_EXTERN_INLINE) || defined (__GMP_FORCE_mpri_q_div)
+#if ! defined (__GMP_FORCE_mpri_q_div)
+__GMP_EXTERN_INLINE
+#endif
+void mpri_q_div(mpri_ptr a, mpq_srcptr b, mpri_srcptr c) {
+	const int signof_b=mpria_mpq_sgn(b);
+	const int signof_lepof_c=mpria_mpq_sgn(mpri_lepref(c));
+	const int signof_repof_c=mpria_mpq_sgn(mpri_repref(c));
+	if ((0 < signof_lepof_c) || (signof_repof_c < 0)) { /* ((0 < lepof_c <= repof_c) or (lepof_c <= repof_c < 0)) */
+		if (0 < signof_b) {
+			if (a != c) {
+				mpq_div(mpri_lepref(a),b,mpri_repref(c));
+				mpq_div(mpri_repref(a),b,mpri_lepref(c));
+				}
+			else { /* (a == c) */
+				mpq_swap(mpri_lepref(a),mpri_repref(a));
+				mpq_div(mpri_lepref(a),b,mpri_lepref(a));
+				mpq_div(mpri_repref(a),b,mpri_repref(a));
+				}
+			}
+		else if (signof_b < 0) {
+			mpq_div(mpri_lepref(a),b,mpri_lepref(c));
+			mpq_div(mpri_repref(a),b,mpri_repref(c));
+			}
+		else { /* (signof_b == 0) */
+			MPRI_SET_ZERO(a);
+			}
+		}
+	else { /* (lepof_c <= 0 <= repof_c) */
+		MPRI_SET_NAN(a);
+		}
+	return ; }
+#endif
+
+#if defined (__GMP_EXTERN_INLINE) || defined (__GMP_FORCE_mpri_div_2exp)
+#if ! defined (__GMP_FORCE_mpri_div_2exp)
+__GMP_EXTERN_INLINE
+#endif
+void mpri_div_2exp(mpri_ptr a, mpri_srcptr b, unsigned long int n) {
+	mpq_div_2exp(mpri_lepref(a),mpri_lepref(b),n);
+	mpq_div_2exp(mpri_repref(a),mpri_repref(b),n);
+	return ; }
+#endif
+
+#if defined (__GMP_EXTERN_INLINE) || defined (__GMP_FORCE_mpri_neg)
+#if ! defined (__GMP_FORCE_mpri_neg)
+__GMP_EXTERN_INLINE
+#endif
+void mpri_neg(mpri_ptr a, mpri_srcptr b) {
+	if (a != b) {
+		mpq_neg(mpri_lepref(a),mpri_repref(b));
+		mpq_neg(mpri_repref(a),mpri_lepref(b));
+		}
+	else { /* (a == b) */
+		mpq_swap(mpri_lepref(a),mpri_repref(a));
+		mpq_neg(mpri_lepref(a),mpri_lepref(a));
+		mpq_neg(mpri_repref(a),mpri_repref(a));
+		}
+	return ; }
+#endif
+
+#if defined (__GMP_EXTERN_INLINE) || defined (__GMP_FORCE_mpri_abs)
+#if ! defined (__GMP_FORCE_mpri_abs)
+__GMP_EXTERN_INLINE
+#endif
+void mpri_abs(mpri_ptr a, mpri_srcptr b) {
+	if (a != b) {
+		if MPRIA_MPQ_IS_POSITIVE(mpri_lepref(b)) {
+			mpq_set(mpri_lepref(a),mpri_lepref(b));
+			mpq_set(mpri_repref(a),mpri_repref(b));
+			}
+		else if MPRIA_MPQ_IS_NEGATIVE(mpri_repref(b)) {
+			mpq_abs(mpri_lepref(a),mpri_repref(b));
+			mpq_abs(mpri_repref(a),mpri_lepref(b));
+			}
+		else { /* (lepof_b < 0 < repof_b) */
+			mpq_abs(mpri_repref(a),mpri_lepref(b));
+			if (mpq_cmp(mpri_repref(a),mpri_repref(b)) < 0) { /* (|lepof_b| < |repof_b|) */
+				mpq_set(mpri_repref(a),mpri_repref(b));
+				}
+#if 0
+			else { /* (|repof_b| <= |lepof_b|) */
+				mpq_abs(mpri_repref(a),mpri_lepref(b));
+				}
+#endif
+			MPRIA_MPQ_SET_ZERO(mpri_lepref(a));
+			}
+		}
+	else { /* (a == b) */
+		if MPRIA_MPQ_IS_NEGATIVE(mpri_repref(a)) {
+			mpq_swap(mpri_lepref(a),mpri_repref(a));
+			mpq_abs(mpri_lepref(a),mpri_lepref(a));
+			mpq_abs(mpri_repref(a),mpri_repref(a));
+			}
+		else if (!(MPRIA_MPQ_IS_POSITIVE(mpri_lepref(a)))) { /* (lepof_a < 0 < repof_a) */
+			mpq_abs(mpri_lepref(a),mpri_lepref(a));
+			if (mpq_cmp(mpri_repref(a),mpri_lepref(a)) < 0) { /* (|repof_a| < |lepof_a|) */
+				mpq_swap(mpri_lepref(a),mpri_repref(a));
+				}
+#if 0
+			else { /* (|lepof_a| <= |repof_a|) */
+				}
+#endif
+			MPRIA_MPQ_SET_ZERO(mpri_lepref(a));
+			}
+		}
+	return ; }
+#endif
+
+#if defined (__GMP_EXTERN_INLINE) || defined (__GMP_FORCE_mpri_inv)
+#if ! defined (__GMP_FORCE_mpri_inv)
+__GMP_EXTERN_INLINE
+#endif
+void mpri_inv(mpri_ptr a, mpri_srcptr b) {
+	const int signof_lepof_b=mpria_mpq_sgn(mpri_lepref(b));
+	const int signof_repof_b=mpria_mpq_sgn(mpri_repref(b));
+	if ((0 < signof_lepof_b) || (signof_repof_b < 0)) { /* ((0 < lepof_b <= repof_b) or (lepof_b <= repof_b < 0)) */
+		if (a != b) {
+			mpq_inv(mpri_lepref(a),mpri_repref(b));
+			mpq_inv(mpri_repref(a),mpri_lepref(b));
+			}
+		else { /* (a == b) */
+			mpq_swap(mpri_lepref(a),mpri_repref(a));
+			mpq_inv(mpri_lepref(a),mpri_lepref(a));
+			mpq_inv(mpri_repref(a),mpri_repref(a));
+			}
+		}
+	else { /* (lepof_b <= 0 <= repof_b) */
+		MPRI_SET_NAN(a);
+		}
+	return ; }
+#endif
+
+#if defined (__GMP_EXTERN_INLINE) || defined (__GMP_FORCE_mpri_sqr)
+#if ! defined (__GMP_FORCE_mpri_sqr)
+__GMP_EXTERN_INLINE
+#endif
+void mpri_sqr(mpri_ptr a, mpri_srcptr b) {
+	if MPRIA_MPQ_IS_POSITIVE(mpri_lepref(b)) {
+		mpq_mul(mpri_lepref(a),mpri_lepref(b),mpri_lepref(b));
+		mpq_mul(mpri_repref(a),mpri_repref(b),mpri_repref(b));
+		}
+	else if MPRIA_MPQ_IS_NEGATIVE(mpri_repref(b)) {
+		if (a != b) {
+			mpq_mul(mpri_lepref(a),mpri_repref(b),mpri_repref(b));
+			mpq_mul(mpri_repref(a),mpri_lepref(b),mpri_lepref(b));
+			}
+		else { /* (a == b) */
+			mpq_swap(mpri_lepref(a),mpri_repref(a));
+			mpq_mul(mpri_lepref(a),mpri_lepref(a),mpri_lepref(a));
+			mpq_mul(mpri_repref(a),mpri_repref(a),mpri_repref(a));
+			}
+		}
+	else {
+		mpq_abs(mpri_lepref(a),mpri_lepref(b));
+		if (mpq_cmp(mpri_lepref(a),mpri_repref(b)) <= 0) { /* (|lepof_b| <= |repof_b|) */
+			mpq_mul(mpri_repref(a),mpri_repref(b),mpri_repref(b));
+			}
+		else { /* (|repof_b| < |lepof_b|) */
+			mpq_mul(mpri_repref(a),mpri_lepref(b),mpri_lepref(b));
+			}
+		MPRIA_MPQ_SET_ZERO(mpri_lepref(a));
+		}
+	return ; }
+#endif
+
+#if defined (__GMP_EXTERN_INLINE) || defined (__GMP_FORCE_mpri_sqrt)
+#if ! defined (__GMP_FORCE_mpri_sqrt)
+__GMP_EXTERN_INLINE
+#endif
+void mpri_sqrt(mpri_ptr a, mpri_srcptr b, mpri_prec_t bits) {
+	if MPRIA_MPQ_IS_POSITIVE(mpri_lepref(b)) {
+		mpz_mul(mpq_numref(mpri_lepref(a)),mpq_numref(mpri_lepref(b)),mpq_denref(mpri_lepref(b)));
+		mpz_mul(mpq_numref(mpri_repref(a)),mpq_numref(mpri_repref(b)),mpq_denref(mpri_repref(b)));
+		mpri_set_qi_z_ASGMT(a,__mpria_z_zero,mpq_numref(mpri_lepref(a)),mpq_denref(mpri_lepref(b)),bits,MPRI_SRND_BCAL,MPRI_ASGMT_OL);
+		mpri_set_qi_z_ASGMT(a,__mpria_z_zero,mpq_numref(mpri_repref(a)),mpq_denref(mpri_repref(b)),bits,MPRI_SRND_BCAR,MPRI_ASGMT_OR);
+		}
+	else {
+		MPRI_SET_NAN(a);
+		}
+	return ; }
+#endif
+
+#if defined (__GMP_EXTERN_INLINE) || defined (__GMP_FORCE_mpri_rsqrt)
+#if ! defined (__GMP_FORCE_mpri_rsqrt)
+__GMP_EXTERN_INLINE
+#endif
+void mpri_rsqrt(mpri_ptr a, mpri_srcptr b, mpri_prec_t bits) {
+	if MPRIA_MPQ_IS_STRICTLY_POSITIVE(mpri_lepref(b)) {
+		if (a != b) {
+			mpz_mul(mpq_denref(mpri_lepref(a)),mpq_numref(mpri_repref(b)),mpq_denref(mpri_repref(b)));
+			mpz_mul(mpq_denref(mpri_repref(a)),mpq_numref(mpri_lepref(b)),mpq_denref(mpri_lepref(b)));
+			mpri_set_qi_z_ASGMT(a,__mpria_z_zero,mpq_denref(mpri_lepref(a)),mpq_numref(mpri_repref(b)),bits,MPRI_SRND_BCAL,MPRI_ASGMT_OL);
+			mpri_set_qi_z_ASGMT(a,__mpria_z_zero,mpq_denref(mpri_repref(a)),mpq_numref(mpri_lepref(b)),bits,MPRI_SRND_BCAR,MPRI_ASGMT_OR);
+			}
+		else { /* (a == b) */
+			mpq_swap(mpri_lepref(a),mpri_repref(a));
+			mpz_mul(mpq_denref(mpri_lepref(a)),mpq_numref(mpri_lepref(a)),mpq_denref(mpri_lepref(a)));
+			mpz_mul(mpq_denref(mpri_repref(a)),mpq_numref(mpri_repref(a)),mpq_denref(mpri_repref(a)));
+			mpri_set_qi_z_ASGMT(a,__mpria_z_zero,mpq_denref(mpri_lepref(a)),mpq_numref(mpri_lepref(a)),bits,MPRI_SRND_BCAL,MPRI_ASGMT_OL);
+			mpri_set_qi_z_ASGMT(a,__mpria_z_zero,mpq_denref(mpri_repref(a)),mpq_numref(mpri_repref(a)),bits,MPRI_SRND_BCAR,MPRI_ASGMT_OR);
+			}
+		}
+	else {
+		MPRI_SET_NAN(a);
+		}
+	return ; }
+#endif
+
+#if defined (__GMP_EXTERN_INLINE) || defined (__GMP_FORCE_mpri_atan)
+#if ! defined (__GMP_FORCE_mpri_atan)
+__GMP_EXTERN_INLINE
+#endif
+void mpri_atan(mpri_ptr x, mpri_srcptr a, mpri_prec_t bits) {
+	mpri_2exp_atan(x,0UL,a,bits);
+	return ; }
+#endif
+
+#if defined (__GMP_EXTERN_INLINE) || defined (__GMP_FORCE_mpri_equal)
+#if ! defined (__GMP_FORCE_mpri_equal)
+__GMP_EXTERN_INLINE
+#endif
+int mpri_equal(mpri_srcptr a, mpri_srcptr b) {
+	return ((
+			(mpq_equal(mpri_lepref(a),mpri_lepref(b))) &&
+			(mpq_equal(mpri_repref(a),mpri_repref(b)))
+		)?1:0); }
+#endif
+
+#if defined (__GMP_EXTERN_INLINE) || defined (__GMP_FORCE_mpri_is_zero)
+#if ! defined (__GMP_FORCE_mpri_is_zero)
+__GMP_EXTERN_INLINE
+#endif
+int mpri_is_zero(mpri_srcptr a) {
+	return ((
+			((mpri_lepref(a))->_mp_num._mp_size) ||
+			((mpri_repref(a))->_mp_num._mp_size)
+		)?0:1); }
+#endif
+
+#if defined (__GMP_EXTERN_INLINE) || defined (__GMP_FORCE_mpri_is_nonzero)
+#if ! defined (__GMP_FORCE_mpri_is_nonzero)
+__GMP_EXTERN_INLINE
+#endif
+int mpri_is_nonzero(mpri_srcptr a) {
+	return ((
+			((mpri_lepref(a))->_mp_num._mp_size) ||
+			((mpri_repref(a))->_mp_num._mp_size)
+		)?1:0); }
+#endif
+
+#if defined (__GMP_EXTERN_INLINE) || defined (__GMP_FORCE_mpri_has_zero)
+#if ! defined (__GMP_FORCE_mpri_has_zero)
+__GMP_EXTERN_INLINE
+#endif
+int mpri_has_zero(mpri_srcptr a) {
+	const int signof_lepof_a=mpria_mpq_sgn(mpri_lepref(a));
+	const int signof_repof_a=mpria_mpq_sgn(mpri_repref(a));
+	return (((0 < signof_lepof_a) || (signof_repof_a < 0))?0:1); }
+#endif
+
+#if defined (__GMP_EXTERN_INLINE) || defined (__GMP_FORCE_mpri_hasnot_zero)
+#if ! defined (__GMP_FORCE_mpri_hasnot_zero)
+__GMP_EXTERN_INLINE
+#endif
+int mpri_hasnot_zero(mpri_srcptr a) {
+	const int signof_lepof_a=mpria_mpq_sgn(mpri_lepref(a));
+	const int signof_repof_a=mpria_mpq_sgn(mpri_repref(a));
+	return ((0 < signof_lepof_a)?+1:((signof_repof_a < 0)?-1:0)); }
+#endif
+
+#if defined (__GMP_EXTERN_INLINE) || defined (__GMP_FORCE_mpri_get_left)
+#if ! defined (__GMP_FORCE_mpri_get_left)
+__GMP_EXTERN_INLINE
+#endif
+void mpri_get_left(mpq_ptr a, mpri_srcptr b) {
+	mpq_set(a,mpri_lepref(b));
+	return ; }
+#endif
+
+#if defined (__GMP_EXTERN_INLINE) || defined (__GMP_FORCE_mpri_get_right)
+#if ! defined (__GMP_FORCE_mpri_get_right)
+__GMP_EXTERN_INLINE
+#endif
+void mpri_get_right(mpq_ptr a, mpri_srcptr b) {
+	mpq_set(a,mpri_repref(b));
+	return ; }
+#endif
+
+/***********************************************/
+
+
+void mpria_libversion_get_numbers(int *, int *, int *);
+int mpria_libversion_get_number(void);
+const char * mpria_libversion_get_string(void);
+#define mpria_libversion (mpria_libversion_get_string())
+#define mpria_version mpria_libversion
+
+int mpria_libversion_check_numbers(int, int, int);
+#define mpria_libversion_check() \
+	(mpria_libversion_check_numbers(MPRIA_VERSION_MAJOR,MPRIA_VERSION_MINOR,MPRIA_VERSION_MICRO))
+
+
+__END_DECLS
+
+#endif /* __MPRIA_H__ */
+
+/*
+ * vim:syntax=c
+ */
+
+/* End of file mpria.h */

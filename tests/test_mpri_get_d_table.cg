@@ -1,0 +1,82 @@
+## tests/test_mpri_get_d_table.cg -- GAP master script
+## MPRIA - GNU Multi-Precision Rational Interval Arithmetic Library
+## Copyright (C) 2009-2016  Jerome Benoit <jgmbenoit@rezozer.net>
+##
+## This file is part of the GNU MPRIA Library.
+##
+## The GNU MPRIA Library is free software: you can redistribute it and/or modify it
+## under the terms of the GNU General Public License as published by
+## the Free Software Foundation, either version 3 of the License, or
+## (at your option) any later version.
+##
+## The GNU MPRIA Library is distributed in the hope that it will be useful,
+## but WITHOUT ANY WARRANTY; without even the implied warranty of
+## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+## GNU General Public License for more details.
+##
+## You should have received a copy of the GNU General Public License
+## along with the GNU MPRIA Library.  If not, see <http://www.gnu.org/licenses/>.
+##
+
+MPRIAMasterFileNameComment:=function() return ("not human readable"); end;;
+
+Read("mpria_test.gi");
+if (IsBound(MPRIAMasterFileName) and (MPRIAMasterFileName <> fail)) then
+
+listof_bits:=[
+	10,
+	24,
+	53,
+	113,
+	256,
+#	512,
+#	1024,
+#	2048,
+	];
+
+listof_candidate:=[
+	[0,0],
+	[+1,+1],
+	];
+
+for bits in listof_bits do
+	SetFloats(MPFR,bits);
+	epsilon:=4/2^bits;
+	for x in [FLOAT.PI,FLOAT.SQRT2] do
+		Append(listof_candidate,[
+			[Rat(+x),Rat(+x)],
+			[Rat(-x),Rat(-x)],
+			[Rat(+x-epsilon),Rat(+x+epsilon)],
+			[Rat(-x-epsilon),Rat(-x+epsilon)],
+			]);
+	od;
+od;
+
+## preamble
+MPRIACInputOpen();
+
+## amble
+MPRIACInputWriteTestTableLineBEGIN();
+
+SetFloats(MPFR,53);
+for cdx in listof_candidate do
+	expected:=(cdx[1]+cdx[2])/2;
+	AppendTo(CInputStream,
+		"\t{",
+		SeqStringifyListOfNum(cdx),",",
+		HexStringifyFloat(Float(expected)),
+		"},\n"
+		);
+od;
+
+MPRIACInputWriteTestTableLineEND("{NULL,NULL,(0.0/0.0)}");
+
+## postamble
+MPRIACInputClose();
+
+fi;
+QUIT;
+##
+## vim:syntax=gap
+##
+## End of file tests/test_mpri_get_d_table.cg

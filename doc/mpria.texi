@@ -1,0 +1,1887 @@
+\input texinfo   @c -*-texinfo-*-
+@c %**start of header
+@setfilename mpria.info
+@include version.texi
+@set BUGREPORT @samp{bug-mpria@@gnu.org}
+@set SAMPLE_GMP_VERSION 6.1.0
+@set SAMPLE_MPRIA_VERSION 0.7.3
+@c @set BUGREPORT @email{bug-mpria@@gnu.org}
+@settitle GNU MPRIA @value{VERSION}
+@iftex
+@afourpaper
+@end iftex
+@paragraphindent none
+@c %**end of header
+
+@documentdescription
+This manual describes how to install and use GNU MPRIA,
+a library for Multi-Precision Rational Interval Arithmetic,
+release @value{VERSION}.
+@end documentdescription
+
+@copying
+This manual describes how to install and use
+the GNU Multi-Precision Rational Interval Arithmetic Library,
+release @value{VERSION}.
+@c
+Please report any errors in this manual to @value{BUGREPORT}.
+
+More information about the GNU MPRIA Library can be found at the project homepage,
+@uref{http://www.gnu.org/software/mpria/}.
+@iftex
+@sp 1
+@end iftex
+@quotation
+Copyright @copyright{} 2009-2016
+@ifnotinfo
+J@'er@^ome
+@end ifnotinfo
+@ifinfo
+Jerome
+@end ifinfo
+Benoit
+
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3 or
+any later version published by the Free Software Foundation;
+with no Invariant Sections, no Front-Cover Texts, and no Back-Cover Texts.
+A copy of the license is included in @ref{GNU Free Documentation License}.
+@end quotation
+@end copying
+
+@dircategory Software libraries
+@direntry
+* mpria: (mpria).                 Multi-Precision Rational Interval Arithmetic Library.
+@end direntry
+
+@iftex
+@titlepage
+@title GNU MPRIA
+@subtitle The GNU Multi-Precision Rational Interval Arithmetic Library
+@subtitle Edition @value{EDITION} for Release @value{VERSION}
+@subtitle @value{UPDATED}
+@author J@'er@^ome Benoit
+@value{BUGREPORT}
+@page
+@vskip 0pt plus 1filll
+@insertcopying
+@end titlepage
+@end iftex
+
+@iftex
+@headings double
+@tex
+\global\parindent=0pt
+\global\parskip=8pt
+\global\baselineskip=13pt
+@end tex
+@end iftex
+
+@ifnothtml
+@contents
+@end ifnothtml
+
+@ifnottex
+@node Top
+@top GNU MPRIA
+
+@insertcopying
+@sp 1
+@end ifnottex
+
+@menu
+* Copying::                               MPRIA Copying Conditions (GPL).
+* Introduction to MPRIA::                 Brief introduction to GNU MPRIA.
+* Installing MPRIA::                      How to configure and compile the MPRIA library.
+* Reporting Bugs::                        How to usefully report bugs.
+* MPRIA Basics::                          What every MPRIA user should now.
+* Rational Interval Functions::           Functions for computation on rational intervals.
+* Low-Level Rational Interval Functions:: Low-level functions for computation on rational intervals.
+* Extra Number Functions::                Extra functions for rational numbers and signed integers.
+* General Library Functions::             General-purpose library functions.
+@c * Contributors::                          Who brings you this library ?
+@c * References::                            Some useful papers and books to read.
+* References::
+* GNU General Public License::
+* GNU Free Documentation License::
+* Indices::
+@end menu
+
+@c Convenient macros
+@c
+@c Usage: @STAR
+@c Force a line break only in TeX
+@iftex
+@tex
+\gdef\STAR{\*}
+@end tex
+@end iftex
+@ifnottex
+@macro STAR
+@end macro
+@end ifnottex
+
+@c The following macros have been copied (or inspired) from gmp.texi
+@c
+@c Usage: @MPRIAtimes{}
+@c Give either \times in TeX, * in info or html
+@tex
+\gdef\MPRIAtimes{\times}
+@end tex
+@ifnottex
+@macro MPRIAtimes
+*
+@end macro
+@end ifnottex
+@c
+@c Usage: @MPRIAabs{x}
+@c Give either |x| in TeX, or abs(x) in info or html
+@tex
+\gdef\MPRIAabs#1{\left|#1\right|}
+@end tex
+@ifnottex
+@macro MPRIAabs {X}
+abs(\X\)
+@end macro
+@end ifnottex
+@c
+@c Usage: @MPRIAsqrt{x}
+@c Give either \sqrt{x} in TeX, or sqrt(x) in info or html
+@tex
+\gdef\MPRIAsqrt#1{\sqrt{#1}}
+@end tex
+@ifnottex
+@macro MPRIAsqrt {x}
+sqrt(\x\)
+@end macro
+@end ifnottex
+@c
+@c Usage: @MPRIAarctan{x}
+@c Give either \arctan{x} in TeX, or arctan(x) in info or html
+@tex
+\gdef\MPRIAarctan#1{\arctan{(#1)}}
+@end tex
+@ifnottex
+@macro MPRIAarctan {x}
+arctan(\x\)
+@end macro
+@end ifnottex
+
+@finalout
+@setchapternewpage on
+
+@node Copying, Introduction to MPRIA, Top, Top
+@unnumbered MPRIA Copying Conditions
+@cindex Copying conditions
+@cindex Conditions for copying MPRIA
+@cindex License conditions
+
+The GNU MPRIA Library
+(or MPRIA for short)
+is @dfn{free software}: this means that everyone is free to use it and
+free to redistribute it on a free basis.  The library is not in the public
+domain; it is copyrighted and there are restrictions on its distribution, but
+these restrictions are designed to permit everything that a good cooperating
+citizen would want to do.  What is not allowed is to try to prevent others
+from further sharing any version of this library that they might get from
+you.@refill
+
+Specifically, we want to make sure that you have the right to give away copies
+of the library, that you receive source code or else can get it if you want
+it, that you can change this library or use pieces of it in new free programs,
+and that you know you can do these things.@refill
+
+To make sure that everyone has such rights, we have to forbid you to deprive
+anyone else of these rights.  For example, if you distribute copies of the
+GNU MPRIA Library, you must give the recipients all the rights that you have.
+You must make sure that they, too, receive or can get the source code.
+And you must tell them their rights.@refill
+
+Also, for our own protection, we must make certain that everyone finds out
+that there is no warranty for the GNU MPRIA Library.  If it is modified by
+someone else and passed on, we want their recipients to know that what they
+have is not what we distributed, so that any problems introduced by others
+will not reflect on our reputation.@refill
+
+The precise conditions of the license for the GNU MPRIA Library are found in
+the General Public License version 3 that accompanies the source code,
+see @file{COPYING}.
+A copy of the license is also included in @ref{GNU General Public License}.
+
+@node Introduction to MPRIA
+@chapter Introduction to MPRIA
+@c @cindex Introduction
+
+@menu
+* Description::
+* Up-to-date Material::
+* Mailing Lists::
+* How to use this Manual::
+@end menu
+
+@node Description
+@section Description
+GNU MPRIA is intended to be a portable mathematical library written in C
+for rational interval arithmetic computations with arbitrary precision.
+
+The basic principle of rational interval arithmetic consists in enclosing
+every number by a rational interval containing it: each number is stored
+as its lower and upper endpoints and these bounds are rational numbers;
+their absolute difference measures the precision. The purpose is on the
+right hand to obtain guaranteed results, thanks to interval computation,
+and on the left hand to compute accurate results, thanks to arbitrary
+precision arithmetic.
+
+The arithmetic operations are extended for interval operands in such
+a way that the exact result of the operation belongs to the computed
+rational interval.
+
+The GNU MPRIA library is built upon the GNU MP library for operating
+on rational numbers; see
+@display
+@uref{https://gmplib.org/}.
+@end display
+@sp 1
+
+@node Up-to-date Material
+@section Up-to-date Material
+
+@cindex Latest information about MPRIA
+@cindex Homepage for MPRIA
+The latest information about the library can be found at the project homepage
+@noindent
+@display
+@uref{http://www.gnu.org/software/mpria/},
+@end display
+
+@cindex Latest version of MPRIA
+@cindex Anonymous FTP of latest version
+@cindex FTP of latest version
+@cindex Primary distribution point
+@noindent
+while the primary distribution point for stable releases is at
+@display
+@uref{ftp://ftp.gnu.org/gnu/mpria/}.
+@end display
+
+@noindent
+Many sites around the world mirror @samp{ftp.gnu.org},
+please use a mirror near you; for a full list, see
+@display
+@uref{http://www.gnu.org/order/ftp.html}.
+@end display
+@sp 1
+
+@node Mailing Lists
+@section Mailing Lists
+@cindex Mailing lists
+
+There are three public mailing lists of interest:
+one for release announcements,
+one for general questions and discussions about usage of the GNU MPRIA Library
+and one for bug reports.
+For more information, visit
+@display
+@uref{http://lists.gnu.org/mailman/listinfo/bug-mpria/}.
+@end display
+
+The proper place for bug reports is
+@value{BUGREPORT}.
+@xref{Reporting Bugs}, for information about reporting bugs.
+@sp 1
+
+@node How to use this Manual
+@section How to use this Manual
+@cindex About this manual
+
+Everyone should read @ref{MPRIA Basics}.
+If you need to install the library yourself, then read @ref{Installing MPRIA}.
+To use the library you will need to refer to @ref{Rational Interval Functions};
+for more advanced usage you want to peruse @ref{Low-Level Rational Interval Functions}.
+
+The rest of the manual can be used for later reference,
+although it is probably a good idea to glance through it.
+
+@node Installing MPRIA
+@chapter Installing MPRIA
+@cindex Configuring MPRIA
+@cindex Building MPRIA
+
+@menu
+* How to Install::
+* Other make Targets::
+* Known Build Problems::
+* Getting the Latest Version::
+@end menu
+
+@node How to Install
+@section How to Install
+For a generic installation of the MPRIA library,
+you have first to install a recent version of the GNU MP on your computer.
+You need a C compiler, preferably @command{gcc}, but any reasonable C compiler should work.
+And you need the standard Unix @command{make} command,
+plus some other standard Unix utility commands.
+
+Then, in the MPRIA build directory, type the following commands.
+@enumerate
+@item
+@samp{./configure}
+
+This will prepare the build and setup the options according to your system.
+You can give options to specify the install directories (instead of
+the default @file{/usr/local}), threading support, and so on.
+See the @file{INSTALL} file
+or the output of @samp{./configure --help} for detailed information,
+in particular if you get error messages.
+
+@item
+@samp{make}
+
+This will compile MPRIA and create library files
+with respect to your platform and environment.
+
+@item
+@samp{make check}
+
+This will make sure MPRIA was built correctly.
+If you get error messages, please send a bug report to
+@value{BUGREPORT}.
+@xref{Reporting Bugs}, for information about reporting bugs.
+
+@item
+@samp{make install}
+
+This will copy the C header file @file{mpria.h}
+to the @samp{include} directory @file{/usr/local/include},
+the library files
+(as the share object file @file{libmpria.so} on GNU/Linux computers)
+to the @samp{lib} directory @file{/usr/local/lib},
+possibly the file @file{mpria.info} to the @samp{info} directory @file{/usr/local/share/info},
+and some other documentation files into the document folder @file{/usr/local/share/doc/mpria}
+(or, if you passed the @option{--prefix} option to @command{configure},
+using the prefix directory given as argument to @option{--prefix} instead of @file{/usr/local}).
+@end enumerate
+
+@node Other make Targets
+@section Other @samp{make} Targets
+
+There are some other useful @samp{make} targets:
+
+@itemize @bullet
+@item
+@samp{mpria.info} or @samp{info}
+
+Create or update an info version of the manual, in @file{mpria.info};
+this file is already provided in the MPRIA source tarball.
+
+@item
+@samp{mpria.pdf} or @samp{pdf}
+
+Create a PDF version of the manual, in @file{mpria.pdf};
+this file is already provided in the MPRIA source tarball.
+
+@item
+@samp{mpria.dvi} or @samp{dvi}
+
+Create a DVI version of the manual, in @file{mpria.dvi}.
+
+@item
+@samp{mpria.ps} or @samp{ps}
+
+Create a PostScript version of the manual, in @file{mpria.ps}.
+
+@item
+@samp{mpria.html} or @samp{html}
+
+Create a HTML version of the manual, in several pages in the folder @file{doc/mpria.html};
+to obtain one single page HTML document,
+type @samp{makeinfo --html --no-split mpria.texi} from the @samp{doc} directory instead.
+
+@item
+@samp{clean}
+
+Delete all object files and archive files, but not the configuration files.
+
+@item
+@samp{distclean}
+
+Delete all generated files not included in the distribution.
+
+@item
+@samp{uninstall}
+
+Delete all files copied by @samp{make install}.
+@end itemize
+
+@node Known Build Problems
+@section Known Build Problems
+
+The installation procedure
+and the GNU MPRIA library itself have been only tested
+in some Unix-like environments.
+Because it has not been yet intensively tested,
+you may discover that the GNU MPRIA library suffers
+from all bugs of the underlying GNU MP library,
+plus many many more.
+
+Please report any problem to
+@value{BUGREPORT}.
+@xref{Reporting Bugs}, for information about reporting bugs.
+
+@node Getting the Latest Version
+@section Getting the Latest Version
+
+The latest stable version of MPRIA is available from
+@display
+@url{ftp://ftp.gnu.org/gnu/mpria/}.
+@end display
+
+
+@node Reporting Bugs
+@chapter Reporting Bugs
+@cindex Reporting bugs
+@cindex Bug reporting
+@cindex Problems
+
+If you think you have found a bug in the MPRIA library,
+please investigate it and report it.
+Likewise,
+if you think you have figure out a valuable enhancement for the MPRIA library,
+please mature it and suggest it.
+This library has been made available to you: it is expected
+you will report the bugs that you find or
+you will suggest the enhancements that you wish.
+
+For bug reports, please include enough information
+@c for the maintainers
+to reproduce the problem.
+Generally speaking, that means:
+@itemize @bullet
+@item The MPRIA library version, along with the involved GMP library version.
+@item A test case that makes it possible to reproduce the bug;
+	do not forget to include instructions on how to run the test case.
+@item A description of what goes wrong; please
+	clearly explain what is incorrect and in what way,
+	whether or not you get a crash.
+@item Options given to @command{configure}
+	other than specifying installation directories.
+@item The output from running @samp{./configure}, as printed to @code{stdout},
+	with any options used.
+@item The name of the involved compiler and its version;
+	for @command{gcc}, get the version with @samp{gcc -v},
+	otherwise perhaps @samp{what `which cc`}, or similar.
+@item Hardware and operating system names, versions and details;
+	the output from @samp{uname -a} along with the output from running
+	@samp{./build-aux/config.guess} should be sufficient.
+@item If the bug is related to @command{configure},
+	then attach the compressed contents of @file{config.log}.
+@item Anything else that you think would be helpful;
+	when in doubt whether something is needed or not, include it
+	since it is better to include too much than to leave out
+	something important.
+@end itemize
+
+If your bug report is good, I will do my best to help you to get a corrected
+version of the library;
+if the bug report is poor, I will not do anything about it
+(aside of chiding you to send better bug reports).
+
+@cindex Patches
+@cindex Contributing
+Patches are welcome; if possible,
+please make them with @samp{diff -u} and include @file{ChangeLog} entries.
+Please follow the existing coding style (even if you do not like it).
+
+Please send your bug reports, your suggestions, your patches or
+your comments to:
+@display
+@value{BUGREPORT}.
+@end display
+
+If you think something in this manual is unclear, or downright incorrect, or if
+the language needs to be improved, please send a note to the same address.
+
+@node MPRIA Basics
+@chapter MPRIA Basics
+@cindex Basics
+
+As MPRIA is built upon GMP, it is very advisable to read the GMP Manual first.
+
+@menu
+* Headers and Libraries::
+* Nomenclature and Types::
+* Function Classes::
+* Variable Conventions::
+* Precision Handling and Surrounding Modes::
+* Assignment Modes::
+* Memory Management::
+* Autoconf::
+@end menu
+
+@node Headers and Libraries
+@section Headers and Libraries
+@cindex Headers
+@cindex Libraries
+
+@cindex @file{mpria.h}
+@cindex Include files
+@cindex @code{#include}
+All declarations needed to use MPRIA are collected in the C header file @file{mpria.h};
+it is designed to work with both C and C++ compilers.
+You should include this file in any program using MPRIA:
+
+@example
+#include <mpria.h>
+@end example
+
+@cindex Libraries
+@cindex Linking
+@cindex @code{libgmp}
+@cindex @code{libmpria}
+All programs using MPRIA must link against both @file{libmpria} and @file{libgmp} libraries.
+On typical Unix-like systems this can be done with @samp{-lmpria -lgmp} (in that order),
+for example:
+
+@example
+gcc -o myprogram myprogram.c -lmpria -lgmp
+@end example
+
+@cindex Libtool
+GMP and MPRIA libraries are both built using Libtool,
+thus an application can use that to link if desired
+(@pxref{Integrating libtool,,,libtool,GNU Libtool}).
+
+If GMP or MPRIA have been installed to non-standard locations then
+it may be necessary to use @samp{-I} and @samp{-L} compiler options
+to point to the right directories, and some sort of run-time path for shared libraries.
+
+@node Nomenclature and Types
+@section Nomenclature and Types
+@cindex Nomenclature
+@cindex Types
+
+@cindex Rational Interval
+@tindex @code{mpri_t}
+@noindent
+A @dfn{rational interval} is a closed connected set of rational numbers,
+it is represented in MPRIA by its endpoints which are GMP rational numbers.
+The C data type for these objects is @code{mpri_t}.
+
+MPRIA functions operate on valid rational intervals,
+while their behaviour remains undefined with non-valid rational intervals;
+a valid rational interval is defined as follows@c
+@footnote{@c
+The definition of a valid rational interval might be refined
+in future releases of MPRIA.}:
+@itemize
+@item
+A @dfn{valid rational interval} can have finite or infinite endpoints,
+but its left endpoint is not larger than its right endpoint and cannot
+be @i{+infinity} (@math{+1/0}) while the right endpoint cannot be @i{-infinity} (@math{-1/0}).
+Whenever the left and right endpoints are equal to a same rational @var{q},
+the valid rational interval reduces then to the singleton interval @math{[@var{q},@var{q}]}
+which represents exactly the rational @var{q};
+conversely, any rational @var{q} is perfectly represented
+by the singleton interval @math{[@var{q},@var{q}]}.
+@end itemize
+
+MPRIA functions may return intervals that are not valid as input value;
+their semantic is defined as follows@c
+@footnote{@c
+The meaning of an invalid operation, the representation of the empty interval
+and their handling may evolve in future releases of MPRIA,
+according to the standardisation of interval arithmetic in @cite{IEEE-1788} (@pxref{References}).}:
+@itemize
+@item
+Whenever the left endpoint or the right endpoint is @i{NaN} (@math{0/0}),
+it indicates that an @dfn{invalid operation} has been performed and
+that the resulting rational interval has no mathematical meaning.
+@item
+Whenever the left endpoint is strictly greater than the right endpoint,
+it means that the resulting rational interval is the @dfn{empty interval}.
+@end itemize
+
+Some functions on rational intervals return a rational number.
+Among such functions, there are @code{mpri_get_left} and @code{mpri_get_right}
+that respectively return the left and right endpoints of a rational interval,
+and there is @code{mpri_diam_abs} that computes the width of a rational interval.
+
+@cindex Rational numbers
+@tindex @code{mpq_t}
+@dfn{Rational numbers} (or @dfn{rationals} for short) and rational arithmetic functions
+are brought as is from the GMP library.
+The C data type for rationals is @code{mpq_t},
+while their related functions start with the prefix @code{mpq_}
+(@pxref{Rational Number Functions,,,gmp,The GNU MP Manual}).
+
+@cindex Precision
+@tindex @code{mpri_prec_t}
+For rational intervals,
+because their endpoints are numbers exactly representable
+that are meant to enclose a result not exactly representable,
+the notion of precision is essentially related to their width
+which is meant to be arbitrarily small.
+The @dfn{precision} of a rational interval designs
+the @slanted{integer binary logarithm} @c (@math{ilog_{2}})
+of the reciprocal of its width;
+as such, it expresses in bits.
+The corresponding C data type is @code{mpri_prec_t}.
+
+@cindex Surrounding mode
+@cindex Best convert
+@tindex @code{mpri_srnd_t}
+When a MPRIA function implements some sort of convergent algorithm to return rational intervals,
+besides passing a precision parameter in bits to terminate the computation,
+a @dfn{surrounding mode} parameter specifies whether to place the @dfn{best convert}
+either at the left endpoint, at the right endpoint or arbitrarily.
+The C data type for these modes is @code{mpri_srnd_t}.
+Typically it concerns implementations based on the Euclidean algorithm (which are omnipresent).
+
+@cindex Assignment mode
+@tindex @code{mpri_asgmt_t}
+
+Some MPRIA functions that involve heavy computations admit as last parameter
+an @dfn{assignment mode} which specifies whether to assign
+either only the left endpoint, only the right endpoint, or the two endpoints.
+The C data type for these modes is @code{mpri_asgmt_t}.
+Those functions are considered as low-level and are both
+appended with the capitalised suffix @code{_ASGMT}
+and wrapped by a macro that assigns the two endpoints.
+
+@node Function Classes
+@section Function Classes
+
+There are four classes of functions in the MPRIA library:
+
+@enumerate
+@item
+Functions for intervals computation based on rational numbers:
+their names begin with @code{mpri_} and their associated type is @code{mpri_t}.
+This class gathers
+the standard computing assignment methods and concomitants,
+computing subroutines for rational interval approximations of quadratic irrational numbers,
+the four basic binary arithmetic operations and the classic unary operators built around them,
+and
+computing subroutines for rational interval approximations of elementary analytic mathematical functions.
+(@xref{Rational Interval Functions}.)
+
+@item
+Low-level functions for rational interval approximations of analytic mathematical functions:
+their names are both prepended by @code{mpri_} and appended by @code{_ASGMT},
+their associated type is @code{mpri_t}
+while their last parameter is an assignment mode of type @code{mpri_asgmt_t}.
+These low-level functions are not meant to be called directly
+but rather efficiently enwrapped within inline or macro functions.
+(@xref{Low-Level Rational Interval Functions}.)
+
+@item
+Fast and convenient low-level functions that operate on signed integers and rational numbers:
+their names begin with @code{mpria_mpq_} and @code{mpria_mpz_}, respectively;
+their associated type are @code{mpz_t} and @code{mpq_t}, respectively.
+Implemented with great efficiency and handiness in mind,
+these functions are mainly inline and macro functions
+that are intensively used by the functions in the precedent categories;
+you are highly encouraged to employ them directly
+within time-critical or intricate subroutines.
+They intently complete rather than substitute
+their already furnished alikes in the GNU MP library,
+the prefix @code{mpria_} preventing from possible naming conflicts.
+(@xref{Extra Number Functions}.)
+
+@item
+Miscellaneous functions.
+As memory management is inherited from the GNU MP library by design,
+this miscellanea essentially concerns
+functions for handling up different versions of the library.
+Two kinds of version handling function are distinguished:
+the functions that treat the version data of the library against which
+the application is effectively compiled,
+as such they act at compile time;
+the functions that deal with the version data of the library against which
+the application is dynamically linked,
+therefore they rather serve at run time.
+The formers are C preprocessor macros with names beginning with @code{MPRIA_VERSION_},
+the latters are C plain functions with names beginning with @code{mpria_libversion_}.
+(@xref{General Library Functions}.)
+
+@end enumerate
+
+@node Variable Conventions
+@section Variable Conventions
+
+MPRIA functions expect output arguments before input arguments.
+This general rule,
+which is inherited from the GNU MP library,
+is based on an analogy with the assignment operator.
+
+As a matter of fact,
+the analogy has been pushed further by allowing
+to use the same variable for both input and output in the same expression;
+this extension of the general rule is also inherited from the GNU MP library.
+For example,
+the square function, @code{mpri_sqr}, can be used as follows:
+
+@example
+mpri_sqr (x, x);
+@end example
+
+what computes the set of squares of every rational number belonging to @code{x}
+and puts the results back in @code{x}.
+
+As for MP variables, MPRIA variables must be initialised once before any assignment
+and may be cleared out after use.
+A (MP or) MPRIA variable should be initialised only once,
+or at least be cleared out between each initialisation.
+After such a variable has been initialised, it can be assigned numerous times;
+it will have the same allocated space during all its lifetime.
+
+For efficiency reasons, avoid excessive initialising and clearing out:
+as a rule of thumb, initialise near the beginning of an application
+and clear out near its ending;
+better still, implement workspaces or garbage collections
+to pass and reuse these variables all along the computing process.
+
+@node Precision Handling and Surrounding Modes
+@section Precision Handling and Surrounding Modes
+@c @cindex Precision
+
+The following six PRECision parameters are predefined @c and named
+with respect to the @cite{IEEE-754} standard (@pxref{References}),
+except notably for the @dfn{meaningless precision}:
+
+@vindex @code{MPRI_PREC_BITS_NIL}
+@vindex @code{MPRI_PREC_BITS_HALF}
+@vindex @code{MPRI_PREC_BITS_SINGLE}
+@vindex @code{MPRI_PREC_BITS_DOUBLE}
+@vindex @code{MPRI_PREC_BITS_QUADRUPLE}
+@vindex @code{MPRI_PREC_BITS_OCTUPLE}
+@itemize @bullet
+@item @code{MPRI_PREC_BITS_NIL}: meaningless precision,
+@item @code{MPRI_PREC_BITS_HALF}: half precision (binary16) or 11 bits,
+@item @code{MPRI_PREC_BITS_SINGLE}: single precision (binary32) or 24 bits,
+@item @code{MPRI_PREC_BITS_DOUBLE}: double precision (binary64) or 53 bits,
+@item @code{MPRI_PREC_BITS_QUADRUPLE}: quadruple precision (binary128) or 113 bits,
+@item @code{MPRI_PREC_BITS_OCTUPLE}: octuple precision or 237 bits.
+@end itemize
+
+The following three SuRrouNDing modes are supported:
+
+@vindex @code{MPRI_SRND_BCAL}
+@vindex @code{MPRI_SRND_BCAA}
+@vindex @code{MPRI_SRND_BCAR}
+@itemize @bullet
+@item @code{MPRI_SRND_BCAL}: Best Convert At Left endpoint,
+@item @code{MPRI_SRND_BCAA}: Best Convert At Any endpoint,
+@item @code{MPRI_SRND_BCAR}: Best Convert At Right endpoint.
+@end itemize
+
+@node Assignment Modes
+@section Assignment Modes
+@cindex Assignments modes
+
+The following three ASsiGnMenT modes are supported:
+
+@vindex @code{MPRI_ASGMT_OL}
+@vindex @code{MPRI_ASGMT_LR}
+@vindex @code{MPRI_ASGMT_OR}
+@itemize @bullet
+@item @code{MPRI_ASGMT_OL}: assign Only Left endpoint,
+@item @code{MPRI_ASGMT_LR}: assign Left and Right endpoints,
+@item @code{MPRI_ASGMT_OR}: assign Only Right endpoint.
+@end itemize
+
+@c @section Exceptions
+@c @cindex Exceptions
+
+@c @section Error Handling
+@c @cindex Error handling
+
+@node Memory Management
+@section Memory Management
+@cindex Memory management
+
+Basically MPRIA mimics and relays to the GNU MP memory management,
+except notably for temporary use
+(@pxref{Memory Management,,,gmp,The GNU MP Manual}).
+
+The @code{mpq_t} type is for the implementation of the @code{mpri_t} type what
+the @code{mpz_t} type is for the implementation of the @code{mpq_t} type itself:
+@code{mpri_t} variables never reduce their allocated space, as @code{mpq_t} variables.
+
+All memory is allocated, reallocated and freed by passing on
+to the GNU MP memory functions as grabbed from @code{mp_get_memory_functions}
+(@pxref{Custom Allocation,,,gmp,The GNU MP Manual}).
+
+While GMP uses @i{temporary memory on the stack} (via @code{alloca}),
+MPRIA creates, passes along and intensively reuses @dfn{workspace}s for internal computation;
+the various created workspaces are freed before exiting
+with the help of the standard C @code{atexit} function
+(@pxref{Cleanups on Exit,,,libc,The GNU C Library Reference Manual}),
+therefore no memory leaks should be reported by tools like @command{valgrind}
+(@uref{http://valgrind.org/}).
+
+@quotation Teething Note
+At the time of writing, this internal workspace machinery is robust but @strong{global},
+read @strong{not yet thread safe},
+and no high-level function is yet implemented to free the created workspaces,
+or part of them,
+from time to time.
+@end quotation
+
+@c @section Reentrancy
+@c @cindex Reentrancy
+
+@c @section Library Versioning
+@c @cindex Versioning
+@c @cindex Release
+
+@node Autoconf
+@section Autoconf
+@cindex Autoconf
+@cindex @file{configure.ac}
+@cindex @file{Makefile.am}
+@cindex @file{mpria.m4}
+@cindex @file{mpria_ax_prog_path_gmp_cc.m4}
+
+For applications using @command{autoconf} and its friends,
+the macro @code{mpria_AM_PATH_MPRIA}
+available in the file @file{mpria.m4}
+can be employed to link with the MPRIA automatically
+from the @file{configure} script.
+As preliminary work,
+this macro checks whether MPRIA is properly installed
+and performs compatibility test against
+either a specified version of the library
+or a default workable version of a recent major release of the library.
+To use this macro simply add the following line
+to the @file{configure.ac} @command{autoconf} input file:
+
+@iftex
+@example
+mpria_AM_PATH_MPRIA([MPRIA_VERSION],
+                    [action-if-found],
+                    [action-if-not-found])
+@end example
+@end iftex
+@ifnottex
+@example
+mpria_AM_PATH_MPRIA([MPRIA_VERSION], [action-if-found], [action-if-not-found])
+@end example
+@end ifnottex
+
+where the arguments are optional.
+The first argument @code{MPRIA_VERSION} should be
+either the one digit version number @sc{MAJOR},
+the two digit dotted version number @sc{MAJOR.Minor}
+or the three digit dotted version number @sc{MAJOR.Minor.micro}
+of the required release of the GNU MPRIA library.
+While @code{action-if-found} might be worthily empty or @code{:},
+a suitable choice for @code{action-if-not-found} is
+@example
+AC_MSG_ERROR([no suitable GNU MPRIA library found])
+@end example
+Then the variables @code{MPRIA_CPPFLAGS}, @code{MPRIA_CFLAGS},
+@code{MPRIA_LDFLAGS} and @code{MPRIA_LIBS}
+can be added to the @file{Makefile.am} @command{automake} input files
+to obtain the correct preprocessor, compiler and linker flags.
+For example:
+
+@example
+libfoo_la_CPPFLAGS = $(MPRIA_CPPFLAGS) $(GMP_CPPFLAGS)
+libfoo_la_CFLAGS = $(MPRIA_CFLAGS) $(GMP_CFLAGS)
+libfoo_la_SOURCES = foo-dim.c foo-dam.c foo-dom.c
+libfoo_la_LDFLAGS = $(MPRIA_LDFLAGS) $(GMP_LDFLAGS)
+libfoo_la_LIBADD = $(MPRIA_LIBS) $(GMP_LIBS) $(LIBM)
+@end example
+
+Note that the macro @code{mpria_AM_PATH_MPRIA} requires
+the macro @code{mpria_AM_PATH_GMP} which is provided
+in the file @file{mpria_ax_prog_path_gmp_cc.m4};
+as you have already guessed,
+the macro @code{mpria_AM_PATH_GMP} is for the GNU MP library
+what the macro @code{mpria_AM_PATH_MPRIA} is for the GNU MPRIA library.
+So, in the @file{configure.ac} file, the macro @code{mpria_AM_PATH_GMP}
+must precede the macro @code{mpria_AM_PATH_MPRIA}.
+In the previous example,
+the variables @code{GMP_CPPFLAGS}, @code{GMP_CFLAGS},
+@code{GMP_LDFLAGS} and @code{GMP_LIBS}
+are furnished by the macro @code{mpria_AM_PATH_GMP};
+the variable @code{LIBM} being set up by
+the Libtool macro @code{LT_LIB_M}.
+
+@cindex @code{__GMP_CC}
+@cindex @code{__GMP_CFLAGS}
+For building more closely to the GNU MP library built,
+further tweaks are required.
+The main difficulty is to grab and use at proper time
+the compiler information stored at GNU MP build-time
+in the two macros @code{__GMP_CC} and @code{__GMP_CFLAGS},
+which are defined in the header file @file{gmp.h}.
+Ideally this information should be first obtained
+with the help of a C PreProcessor (@env{CPP})
+in such a way that the C Compiler (@env{CC})
+could be then set up accordingly.
+Unfortunately, at the time of writing,
+the only ready-to-use @command{autoconf} macro
+meant to set up the C preprocessor to be employed,
+that is to say @code{AC_PROG_CPP},
+depends to do so on the @command{autoconf} macro @code{AC_PROG_CC},
+which determines with no easy comeback the C compiler to be employed:
+in short, the difficulty is harder than expected.
+As a matter of fact, the file @file{mpria_ax_prog_path_gmp_cc.m4}
+contains a bunch of macros that allows to overcome the issue
+in a transparent way for the final developer:
+the macro @code{mpria_AC_PROG_GMP_CC} have to be used
+instead of the macro @code{AC_PROG_CC}.
+Typically the @file{configure.ac} file
+may so contain something similar to the following scrap of code:
+
+@example
+dnl Setup CC and CFLAGS wrt GMP:
+mpria_AC_PROG_GMP_CC
+
+dnl Checks for libraries:
+dnl  the math library:
+LT_LIB_M
+dnl  the GMP libray:
+mpria_AM_PATH_GMP([@value{SAMPLE_GMP_VERSION}])
+dnl  the GNU MPRIA library:
+mpria_AM_PATH_MPRIA([@value{SAMPLE_MPRIA_VERSION}])
+@end example
+
+Besides, the usage of @code{mpria_AC_PROG_GMP_CC} reinforces
+the checks done by @w{@code{mpria_AM_PATH_GMP}}.
+To allow code readability improvement,
+the two latter macros have been combined
+into the single macro @code{mpria_AC_PROG_PATH_GMP_CC}.
+The above scrap of code can thus be rewritten as follows:
+
+@example
+dnl Setup CC and CFLAGS wrt GMP:
+mpria_AC_PROG_PATH_GMP_CC([@value{SAMPLE_GMP_VERSION}])
+
+dnl Checks for libraries:
+dnl  the math library:
+LT_LIB_M
+dnl  the GNU MPRIA library:
+mpria_AM_PATH_MPRIA([@value{SAMPLE_MPRIA_VERSION}])
+@end example
+
+Last but not least,
+non-standard installation locations of the MPRIA and GMP libraries
+are handled with respect to customary use;
+in particular, command line options are implemented in the @file{configure} script
+to specify these locations.
+The macro @code{mpria_AM_PATH_MPRIA} affords
+the following command line options which accept an absolute path as compulsory argument:
+
+@itemize @bullet
+@item @option{--with-mpria-prefix=@t{PREFIX}}
+assumes that MPRIA is installed in the @file{PREFIX} directory,
+the default assumption being @file{/usr/local};
+@item @option{--with-mpria-include=@t{PATH}}
+specifies that @file{PATH} is the MPRIA @file{include} directory,
+the default being @file{PREFIX/include};
+@item @option{--with-mpria-lib=@t{PATH}}
+specifies that @file{PATH} is the MPRIA @file{lib} directory,
+the default being @file{PREFIX/lib}.
+@end itemize
+
+The macros @code{mpria_AC_PROG_GMP_CC},
+@code{mpria_AM_PATH_GMP} and @code{mpria_AC_PROG_PATH_GMP_CC}
+implement command line options that have exactly the same usage but for the GMP library instead:
+@option{--with-gmp-prefix}, @option{--with-gmp-include} and @option{--with-gmp-lib},
+respectively.
+In addition,
+these macros declare the environment variable @env{GMP_GPP} as @i{precious}:
+this advanced feature enables to specify a Generic PreProcessor command
+for early processing of the header file @file{gmp.h}.
+
+@node Rational Interval Functions
+@chapter Rational Interval Functions
+@cindex Interface
+
+@menu
+* Initialisation Functions::
+* Assignment Functions::
+* Interval Conversion Functions::
+* Interval Comparison Functions::
+* Interval Basic Functions::
+* Interval Arithmetic Functions::
+* Interval Approximation of Elementary Functions::
+@end menu
+
+@node Initialisation Functions
+@section Initialisation Functions
+@cindex Rational interval initialisation functions
+@cindex Interval initialisation functions
+@cindex Initialisation functions
+
+An @code{mpri_t} object must be initialised before storing the first value in it:
+the function @code{mpri_init} is used for that purpose,
+the function @code{mpri_clear} clears it out.
+
+@deftypefn {Inline Function} void mpri_init (mpri_t @var{x})
+Initialise @var{x} and set it to the singleton interval @math{[0/1,0/1]}.
+Normally, a variable should be initialised once only
+or at least be cleared out (using @code{mpri_clear}) between consecutive initialisation.
+@end deftypefn
+
+@deftypefn {Inline Function} void mpri_clear (mpri_t @var{x})
+Free the space occupied by the endpoints of @var{x}.
+Make sure to call this function for all @code{mpri_t} variables when you are done with them.
+@end deftypefn
+
+@node Assignment Functions
+@section Assignment Functions
+@cindex Rational interval assignment functions
+@cindex Interval assignment functions
+@cindex Assignment functions
+
+These functions and macros assign new values to already initialised rational intervals.
+@c (@ref{Initialization Functions}).
+
+@deftypefn {Inline Function} void mpri_set (mpri_t @var{rop}, const mpri_t @var{op})
+Assign @var{rop} from @var{op}.
+@end deftypefn
+
+@deftypefn {Macro} void MPRI_SET_ZERO (mpri_t @var{op})
+@deftypefnx {Macro} void MPRI_SET_NAN (mpri_t @var{op})
+Set the value of @var{op} to the singleton intervals @math{[0/1,0/1]} (zero)
+and @math{[0/0,0/0]} (@i{NaN}), respectively.
+@end deftypefn
+
+@deftypefn {Macro} void MPRI_SET_Q (mpri_t @var{rop}, const mpq_t @var{op})
+Set the value of @var{rop} to the singleton interval @math{[@var{op},@var{op}]}.
+@end deftypefn
+
+@deftypefn {Macro} void mpri_set_qi_z (mpri_t @var{rop},@STAR @
+		const mpz_t @var{op1},	const mpz_t @var{op2}, const mpz_t @var{op3},@STAR @
+		mpri_prec_t @var{prec}, mpri_srnd_t @var{srnd})
+@deftypefnx {Inline Function} void mpri_set_qi_q (mpri_t @var{rop},@STAR @
+		const mpq_t @var{op1}, const mpq_t @var{op2}, const mpq_t @var{op3},@STAR @
+		mpri_prec_t @var{prec}, mpri_srnd_t @var{srnd})
+Set the value of @var{rop} to the best rational interval approximation
+of the quadratic irrational number @math{(@var{op1}+@MPRIAsqrt{@var{op2}})/@var{op3}}
+with a @strong{guaranteed} precision of at least @var{prec} bits
+and with respect to the surrounding @var{srnd}.
+The result remains undefined
+if the radicand @var{op2} is negative
+or if the divisor @var{op3} is zero.
+While the macro @code{mpri_set_qi_z} is its natural high-level wrapper,
+the inline function @code{mpri_set_qi_q} belongs to one of the efficient wrappers
+implemented around the low-level function @code{mpri_set_qi_z_ASGMT}.
+@end deftypefn
+
+@deftypefn {Inline Function} void mpri_set_q (mpri_t @var{rop},@STAR @
+		const mpq_t @var{op}, mpri_prec_t @var{prec}, mpri_srnd_t @var{srnd})
+@deftypefnx {Inline Function} void mpri_set_d (mpri_t @var{rop},@STAR @
+		double @var{op}, mpri_prec_t @var{prec}, mpri_srnd_t @var{srnd})
+Set the value of @var{rop} to the best rational interval approximation
+of the number @var{op}
+(respectively, a rational number and a @code{double})
+with a @strong{guaranteed} precision of at least @var{prec} bits
+and with respect to the surrounding @var{srnd}.
+Both are inline wrappers efficiently built
+around the low-level function @code{mpri_set_qi_z_ASGMT};
+a rational being a degenerate quadratic irrational,
+a @code{double} an approximative rational representation of a real number.
+@end deftypefn
+
+@deftypefn {Inline Function} void mpri_set_sqrt_q (mpri_t @var{rop},@STAR @
+		const mpq_t @var{op}, mpri_prec_t @var{prec}, mpri_srnd_t @var{srnd})
+Set the value of @var{rop} to the best rational interval approximation
+of the square root of @var{op},
+@math{@MPRIAsqrt{@var{op}}},
+with a @strong{guaranteed} precision of at least @var{prec} bits
+and with respect to the surrounding @var{srnd}.
+The result is undefined if the radicand @var{op} is negative.
+It is an inline function that efficiently wraps
+around the low-level function @code{mpri_set_qi_z_ASGMT}.
+@end deftypefn
+
+@deftypefn {Inline Function} void mpri_set_rsqrt_q (mpri_t @var{rop},@STAR @
+		const mpq_t @var{op}, mpri_prec_t @var{prec}, mpri_srnd_t @var{srnd})
+Set the value of @var{rop} to the best rational interval approximation
+of the reciprocal square root of @var{op},
+literally @math{@MPRIAsqrt{@var{op}}/@var{op}},
+with a @strong{guaranteed} precision of at least @var{prec} bits
+and with respect to the surrounding @var{srnd}.
+The result stays undefined if the operand @var{op} is either negative or zero.
+This inline function is an efficient wrapper built
+around the low-level function @code{mpri_set_qi_z_ASGMT}.
+@end deftypefn
+
+@deftypefn {Inline Function} void mpri_swap (mpri_t @var{rop1}, mpri_t @var{rop2})
+Swap the values @var{rop1} and @var{rop2} efficiently.
+@end deftypefn
+
+@c @subsection Combined Initialization and Assignment Functions
+@c @cindex Initialization and assignment functions
+
+@node Interval Conversion Functions
+@section Interval Conversion Functions
+@cindex Rational interval conversion functions
+@cindex Interval conversion functions
+@cindex Conversion functions
+
+@deftypefn {Inline Function} void mpri_get_q (mpq_t @var{rop}, const mpri_t @var{op})
+Convert @var{op} to a rational number, which is its centre.@c
+@footnote{@c
+An other conversion choice might be made in future releases of MPRIA;
+to explicitly obtain the centre of a rational interval,
+use @code{mpri_mid} instead.}
+@end deftypefn
+
+@deftypefun double mpri_get_d (const mpri_t @var{op})
+@c @tindex @code{double}
+Convert @var{op} to a @code{double},
+this conversion is the composition of @code{mpri_get_q} and @code{mpq_get_d}.
+@end deftypefun
+
+@node Interval Comparison Functions
+@section Interval Comparison Functions
+@cindex Rational interval comparisons functions
+@cindex Interval comparisons functions
+@cindex Comparison functions
+
+@deftypefn {Inline Function} int mpri_equal (const mpri_t @var{op1}, const mpri_t @var{op2})
+Return either @code{1}
+(read @i{true})
+if the rational intervals @var{op1} and @var{op2} are equal
+or
+@code{0}
+(read @i{false})
+if they are non-equal.
+@end deftypefn
+
+@deftypefn {Inline Function} int mpri_is_zero (const mpri_t @var{op})
+Return @code{1}
+(read @i{true})
+if the rational interval @var{op} is the singleton interval @math{[0/1,0/1]} (zero),
+@code{0}
+(read @i{false})
+otherwise.
+@end deftypefn
+
+@deftypefn {Inline Function} int mpri_is_nonzero (const mpri_t @var{op})
+Return @code{1}
+(read @i{true})
+if the rational interval @var{op} does not reduce to the singleton interval @math{[0/1,0/1]} (zero),
+@code{0}
+(read @i{false})
+otherwise.
+@end deftypefn
+
+@deftypefn {Inline Function} int mpri_has_zero (const mpri_t @var{op})
+Return @code{1}
+(read @i{true})
+if zero belongs to the rational interval @var{op},
+@code{0}
+(read @i{false})
+otherwise.
+@end deftypefn
+
+@deftypefn {Inline Function} int mpri_hasnot_zero (const mpri_t @var{op})
+Return either @code{-1}
+if the rational interval @var{op} is strictly negative,
+or @code{+1} if it is strictly positive,
+or @code{0}
+if it contains zero
+@end deftypefn
+
+@c @section Set Functions on Intervals
+@c @cindex Set functions on intervals
+
+@node Interval Basic Functions
+@section Interval Basic Functions
+@cindex Rational Interval basic functions
+@cindex Interval basic functions
+@cindex Basic functions
+
+Some MPRIA functions on rational intervals return rational results,
+such as the diameter or the centre of a rational interval.
+
+@deftypefn {Inline Function} void mpri_diam_abs (mpq_t @var{rop}, const mpri_t @var{op})
+Set the value of @var{rop} to the absolute diameter of the rational interval @var{op},
+that is to say, to the difference between its right endpoint and its left one.
+@end deftypefn
+
+@deftypefun void mpri_diam_rel (mpq_t @var{rop}, const mpri_t @var{op})
+Set the value of @var{rop} to the relative diameter of the rational interval @var{op},
+in other words,
+either to the difference between its right endpoint and its left one
+divided by the absolute value of its centre when it is not symmetric
+or to @i{NaN} (@math{[0/0,0/0]}) when it is symmetric.
+@end deftypefun
+
+@deftypefn {Inline Function} void mpri_diam (mpq_t @var{rop}, const mpri_t @var{op})
+Set the value of @var{rop} to the relative diameter of the rational interval @var{op}
+if it does not contains zero
+and to its absolute diameter otherwise.
+@end deftypefn
+
+@deftypefn  {Inline Function} void mpri_mig (mpq_t @var{rop}, const mpri_t @var{op})
+@deftypefnx {Inline Function} void mpri_mag (mpq_t @var{rop}, const mpri_t @var{op})
+Set the value of @var{rop} to the mignitude and magnitude of the rational interval @var{op},
+respectively,
+that is to say, to the smallest and largest absolute value of its elements,
+respectively.
+@end deftypefn
+
+@deftypefn {Inline Function} void mpri_mid (mpq_t @var{rop}, const mpri_t @var{op})
+Set the value of @var{rop} to the value of the middle of the rational interval @var{op},
+namely, to the half sum of its endpoints.
+@end deftypefn
+
+@deftypefn  {Macro} mpq_t mpri_lepref (const mpri_t @var{op})
+@deftypefnx {Macro} mpq_t mpri_repref (const mpri_t @var{op})
+Return a reference to the left and right endpoint
+of the rational interval @var{op}, respectively.
+@end deftypefn
+
+@deftypefn  {Inline Function} void mpri_get_left (mpq_t @var{rop}, const mpri_t @var{op})
+@deftypefnx {Inline Function} void mpri_get_right (mpq_t @var{rop}, const mpri_t @var{op})
+Set the value of @var{rop} to the left and right endpoint
+of the rational interval @var{op}, respectively.
+These functions are equivalent to calling @code{mpq_set}
+with an appropriate @code{mpri_lepref} or @code{mpri_repref}.
+Direct use of @code{mpri_lepref} or @code{mpri_repref} is recommended
+instead of these functions.
+@end deftypefn
+
+@deftypefun void mpri_urandomm (mpq_t @var{rop}, const mpri_t @var{op}, gmp_randstate_t @var{state})
+Set the value of @var{rop} to a rational number picked up at random in the rational interval @var{op}
+according to a uniform distribution.
+If the rational interval @var{op} is not valid, the generator returns @i{NaN}, namely @math{0/0}.
+
+@quotation Teething Note
+At the time of writing,
+it is not clear to the author which value the generator should return when the rational interval @var{op}
+is valid but infinite: as caveat, the actual infinite endpoint is returned.
+@end quotation
+
+The argument @var{state} must be initialized by calling one of the GMP random state initialization functions
+(@pxref{Random State Initialization,,,gmp,The GNU MP Manual}) before invoking this functions.
+@end deftypefun
+
+@node Interval Arithmetic Functions
+@section Interval Arithmetic Functions
+@cindex Rational interval arithmetic functions
+@cindex Interval arithmetic functions
+@cindex Arithmetic functions
+
+@deftypefn {Inline Function} void mpri_add (mpri_t @var{rop}, @
+		const mpri_t @var{op1}, const mpri_t @var{op2})
+@deftypefnx {Inline Function} void mpri_add_q (mpri_t @var{rop}, @
+		const mpri_t @var{op1}, const mpq_t @var{op2})
+Set @var{rop} to @math{@var{op1} + @var{op2}}.
+@end deftypefn
+
+@deftypefn {Inline Function} void mpri_sub (mpri_t @var{rop}, @
+		const mpri_t @var{op1}, const mpri_t @var{op2})
+@deftypefnx {Inline Function} void mpri_sub_q (mpri_t @var{rop}, @
+		const mpri_t @var{op1}, const mpq_t @var{op2})
+@deftypefnx {Inline Function} void mpri_q_sub (mpri_t @var{rop}, @
+		const mpq_t @var{op1}, const mpri_t @var{op2})
+Set @var{rop} to @math{@var{op1} - @var{op2}}.
+@end deftypefn
+
+@deftypefn {Function} void mpri_mul (mpri_t @var{rop}, @
+		const mpri_t @var{op1}, const mpri_t @var{op2})
+@deftypefnx {Inline Function} void mpri_mul_q (mpri_t @var{rop}, @
+		const mpri_t @var{op1}, const mpq_t @var{op2})
+Set @var{rop} to @math{@var{op1} @MPRIAtimes{} @var{op2}}.
+Multiplication by zero,
+passed as singleton interval @math{[0/1,0/1]} or literally,
+gives the singleton interval @math{[0/1,0/1]}.
+@end deftypefn
+
+@deftypefn {Function} void mpri_div (mpri_t @var{rop}, @
+		const mpri_t @var{op1}, const mpri_t @var{op2})
+@deftypefnx {Inline Function} void mpri_div_q (mpri_t @var{rop}, @
+		const mpri_t @var{op1}, const mpq_t @var{op2})
+@deftypefnx {Inline Function} void mpri_q_div (mpri_t @var{rop}, @
+		const mpq_t @var{op1}, const mpri_t @var{op2})
+Set @var{rop} to @math{@var{op1}/@var{op2}}.
+When the dividend @var{op1} reduces to the singleton interval @math{[0/1,0/1]}, viz. zero,
+the division returns the singleton interval @math{[0/1,0/1]} as result;
+when the divisor @var{op2} contains zero,
+the division returns @math{[0/0,0/0]}, namely @i{NaN}.
+@end deftypefn
+
+@deftypefn {Inline Function} void mpri_neg (mpri_t @var{rop}, const mpri_t @var{op})
+Set @var{rop} to @minus{}@var{op}.
+@end deftypefn
+
+@deftypefn {Inline Function} void mpri_abs (mpri_t @var{rop}, const mpri_t @var{op})
+Set @var{rop} to @math{@MPRIAabs{@var{op}}}, the absolute value of @var{op}.
+@end deftypefn
+
+@deftypefn {Inline Function} void mpri_inv (mpri_t @var{rop}, const mpri_t @var{op})
+Set @var{rop} to @math{1/@var{op}} when the rational interval @var{op} does not contains zero,
+to @math{[0/0,0/0]} (@i{NaN}) otherwise.
+@end deftypefn
+
+@deftypefn {Inline Function} void mpri_sqr (mpri_t @var{rop}, const mpri_t @var{op})
+Set @var{rop} to
+@iftex
+@math{@var{op}^2}.
+@end iftex
+@ifnottex
+the square of @var{op}.
+@end ifnottex
+@end deftypefn
+
+@deftypefn {Inline Function} void mpri_sqrt (mpri_t @var{rop}, @
+		const mpri_t @var{op}, mpri_prec_t @var{prec})
+Set @var{rop} to the best rational interval approximation
+of the square root of @var{op},
+@math{@MPRIAsqrt{@var{op}}},
+with a @strong{guaranteed} precision of at least @var{prec} bits.
+If the rational interval radicand @var{op} is not positive,
+the return interval is @math{[0/0,0/0]}, namely @i{NaN}.
+This inline function implements an efficient wrapper
+around the low-level function @code{mpri_set_qi_z_ASGMT}.
+@end deftypefn
+
+@deftypefn {Inline Function} void mpri_rsqrt (mpri_t @var{rop}, @
+		const mpri_t @var{op}, mpri_prec_t @var{prec})
+Set @var{rop} to the best rational interval approximation
+of the reciprocal square root of @var{op},
+literally @math{@MPRIAsqrt{@var{op}}/@var{op}},
+with a @strong{guaranteed} precision of at least @var{prec} bits.
+If the rational interval operand @var{op} is not strictly positive,
+the return interval is @math{[0/0,0/0]}, to wit @i{NaN}.
+This inline function efficiently implements a wrapper
+around the low-level function @code{mpri_set_qi_z_ASGMT}.
+@end deftypefn
+
+@deftypefn {Inline Function} void mpri_mul_2exp (mpri_t @var{rop},@STAR @
+		const mpri_t @var{op}, unsigned long int @var{exponent})
+Set @var{rop} to
+@iftex
+@math{@var{op} \times 2^{exponent}}.
+@end iftex
+@ifnottex
+@var{op} times 2 raised to @var{exponent}.
+@end ifnottex
+@end deftypefn
+
+@deftypefn {Inline Function} void mpri_div_2exp (mpri_t @var{rop},@STAR @
+		const mpri_t @var{op}, unsigned long int @var{exponent})
+Set @var{rop} to
+@iftex
+@math{@var{op}/2^{exponent}}.
+@end iftex
+@ifnottex
+@var{op} divided by 2 raised to @var{exponent}.
+@end ifnottex
+@end deftypefn
+
+@node Interval Approximation of Elementary Functions
+@section Interval Approximation of Elementary Functions
+@cindex Rational interval approximation of elementary functions
+@cindex Interval approximation of elementary functions
+@cindex Elementary functions
+
+@quotation Teething Note
+At the time of writing, this part of the library is clearly at a very early stage
+as it basically contains only @i{one} function:
+more functions may be furnished in the coming minor releases,
+the all set of elementary functions in the next major release.
+@end quotation
+
+@deftypefn {Inline Function} void mpri_atan (mpri_t @var{rop}, @
+		const mpri_t @var{op}, mpri_prec_t @var{prec})
+Set @var{rop} to the best rational interval approximation
+of the arc-tangent of @var{op},
+@math{@MPRIAarctan{@var{op}}},
+with a @strong{guaranteed} precision of at least @var{prec} bits.
+This inline function straightforwardly wraps the function @code{mpri_2exp_atan}.
+@end deftypefn
+
+@deftypefun void mpri_2exp_atan (mpri_t @var{rop},@STAR @
+		unsigned long int @var{exponent}, const mpri_t @var{op}, mpri_prec_t @var{prec})
+Set @var{rop} to the best rational interval approximation
+of 2 raised to @var{exponent} times the arc-tangent of @var{op},
+@iftex
+@math{2^{exponent} \times @MPRIAarctan{@var{op}}},
+@end iftex
+with a @strong{guaranteed} precision of at least @var{prec} bits.
+@end deftypefun
+
+@c @section Interval Approximation of Special Functions
+@c @cindex Rational interval approximation of special functions
+@c @cindex Interval approximation of special functions
+@c @cindex Special functions
+
+@c @section Input and Output Functions
+@c @cindex Interval input and output functions
+@c @cindex Input functions
+@c @cindex Output functions
+@c @cindex I/O functions
+
+@node Low-Level Rational Interval Functions
+@chapter Low-Level Rational Interval Functions
+@cindex Low-level interface
+
+@menu
+* Low-Level Interval Elementary Functions::
+* Hard-Coded Numbers::
+@end menu
+
+@node Low-Level Interval Elementary Functions
+@section Low-Level Interval Elementary Functions
+@cindex Low-level rational interval elementary functions
+@cindex Low-level interval elementary functions
+@cindex Low-level elementary functions
+
+@deftypefn {Function} void mpri_set_qi_z_ASGMT (mpri_t @var{rop},@STAR @
+		const mpz_t @var{op1},	const mpz_t @var{op2}, const mpz_t @var{op3},@STAR @
+		mpri_prec_t @var{prec}, mpri_srnd_t @var{srnd},@* mpri_asgmt_t @var{asgmt})
+Set the value of @var{rop} to the best rational interval approximation
+of the quadratic irrational number @math{(@var{op1}+@MPRIAsqrt{@var{op2}})/@var{op3}}
+with a @strong{guaranteed} precision of at least @var{prec} bits
+and with respect to both the surrounding @var{srnd} and the assignment mode @var{asgmt}.
+The result remains undefined
+if the radicand @var{op2} is negative
+or if the divisor @var{op3} is zero.
+@end deftypefn
+
+@node Hard-Coded Numbers
+@section Hard-Coded Numbers
+@cindex Hard-coded numbers
+@cindex Constant numbers
+
+The following collections of hard-coded numbers are mainly meant to serve
+the previous low-level functions within enwrapping inline functions or plain functions.
+For illustrations on how to wrap with them, peruse the header file @file{mpria.h}.
+
+@deftypevr  {Constant} {const mpz_t} __mpria_z_zero
+@deftypevrx {Constant} {const mpz_t} __mpria_z_pos_one
+@deftypevrx {Constant} {const mpz_t} __mpria_z_neg_one
+@deftypevrx {Constant} {const mpz_t} __mpria_z_pos_two
+@deftypevrx {Constant} {const mpz_t} __mpria_z_neg_two
+Collection of @code{mpz_t} signed integers with self-explanatory names.
+@end deftypevr
+
+@deftypevr  {Constant} {const mpq_t} __mpria_q_zero
+@deftypevrx {Constant} {const mpq_t} __mpria_q_pos_one
+@deftypevrx {Constant} {const mpq_t} __mpria_q_neg_one
+@deftypevrx {Constant} {const mpq_t} __mpria_q_pos_two
+@deftypevrx {Constant} {const mpq_t} __mpria_q_neg_two
+Collection of @code{mpq_t} rational numbers with self-explanatory names.
+@end deftypevr
+
+@deftypevr  {Constant} {const mpri_t} __mpria_ri_zero
+@deftypevrx {Constant} {const mpri_t} __mpria_ri_pos_one
+@deftypevrx {Constant} {const mpri_t} __mpria_ri_neg_one
+Collection of @code{mpri_t} rational singleton intervals
+with self-explanatory names.
+@end deftypevr
+
+@node Extra Number Functions
+@chapter Extra Number Functions
+@cindex Extra number functions
+
+@menu
+* Extra Rational Number Functions::
+* Extra Signed Integer Functions::
+@end menu
+
+@node Extra Rational Number Functions
+@section Extra Rational Number Functions
+@cindex Extra rational number functions
+@cindex Low-level rational number functions
+@cindex Rational number functions
+
+@deftypefn  {Macro} {} MPRIA_MPQ_SET_ZERO (@var{Q})
+@deftypefnx {Macro} {} MPRIA_MPQ_SET_POS_ONE (@var{Q})
+@deftypefnx {Macro} {} MPRIA_MPQ_SET_NEG_ONE (@var{Q})
+@deftypefnx {Macro} {} MPRIA_MPQ_SET_NAN (@var{Q})
+@deftypefnx {Macro} {} MPRIA_MPQ_SET_POS_INF (@var{Q})
+@deftypefnx {Macro} {} MPRIA_MPQ_SET_NEG_INF (@var{Q})
+Set the value of the rational number @var{Q} to
+@code{0}, @code{+1}, @code{-1}, @code{0/0} (@i{NaN}),
+@code{+1/0} (@i{+infinity}) and @w{@code{-1/0}} (@i{-infinity}), respectively.
+These utility functions are implemented as plain macros (with self-explanatory names).
+@end deftypefn
+
+@deftypefn  {Macro} {} MPRIA_MPQ_IS_ZERO (@var{Q})
+@deftypefnx {Macro} {} MPRIA_MPQ_IS_NONZERO (@var{Q})
+@deftypefnx {Macro} {} MPRIA_MPQ_IS_POSITIVE (@var{Q})
+@deftypefnx {Macro} {} MPRIA_MPQ_IS_NEGATIVE (@var{Q})
+@deftypefnx {Macro} {} MPRIA_MPQ_IS_STRICTLY_POSITIVE (@var{Q})
+@deftypefnx {Macro} {} MPRIA_MPQ_IS_STRICTLY_NEGATIVE (@var{Q})
+Return @code{1}
+(read @i{true})
+if the rational number @var{Q}
+is either zero, nonzero, positive, negative, strictly positive or strictly negative,
+respectively,
+@code{0}
+(read @i{false})
+otherwise.
+These test functions are plain macro functions (with self-explanatory names).
+@end deftypefn
+
+@deftypefn  {Inline Function} int mpria_mpq_is_nan (const mpq_t @var{op})
+@cindex @i{NaN}
+@cindex Not-a-Number
+Return @code{1}
+(read @i{true})
+if the rational number @var{op} is @dfn{Not-a-Number},
+@code{0}
+(read @i{false)}
+otherwise.
+
+@i{NaN}, the acronym for Not-a-Number, has the representation @math{0/0}.@c
+@footnote{At the time of writing, GMP does not support @i{NaN} for @code{mpq_t} numbers.}
+@end deftypefn
+
+@deftypefn {Inline Function} int mpria_mpq_is_infinite (const mpq_t @var{op})
+@cindex @i{-infinity}
+@cindex @i{+infinity}
+@cindex @i{negative infinity}
+@cindex @i{positive infinity}
+@cindex @i{infinity}
+Return @code{+1} if the rational number @var{op} is @dfn{positive infinity},
+@code{-1} if it is @dfn{negative infinity},
+@code{0} otherwise.
+
+Positive and negative infinities have the representation @math{+1/0} and @math{-1/0}, respectively;@c
+@footnote{At the time of writing, GMP does not support infinities for @code{mpq_t} numbers.}
+they are commonly written @i{+infinity} and @i{-infinity}, respectively.
+@end deftypefn
+
+@deftypefn {Inline Function} int mpria_mpq_is_finite (const mpq_t @var{op})
+@cindex Finite number
+Return @code{1}
+(read @i{true})
+if the rational number @var{op} is finite,
+@code{0}
+(read @i{false})
+if it is either infinite or Not-a-Number.
+@end deftypefn
+
+@deftypefn {Inline Function} int mpria_mpq_sgn (const mpq_t @var{op})
+Return @code{+1} if the rational @var{op} is strictly positive,
+@code{0} if it is zero,
+or @code{-1} if it is strictly negative.
+Its behaviour stays undefined if its argument is @i{NaN} (@math{0/0}).
+@*
+While its counterpart @code{mpq_sgn} is implemented as a macro,
+this function is implemented as an inline function:
+it evaluates its argument only once.
+@end deftypefn
+
+@deftypefun int mpria_mpq_cmpabs (const mpq_t @var{op1}, const mpq_t @var{op2})
+Compare the absolute values of the rational numbers @var{op1} and @var{op2}.
+Return either a positive value if @math{@MPRIAabs{@var{op1}}} is
+strictly greater than @math{@MPRIAabs{@var{op2}}},
+zero if @math{@MPRIAabs{@var{op1}}} is equal to @math{@MPRIAabs{@var{op2}}},
+or a negative value if @math{@MPRIAabs{@var{op1}}} is
+strictly smaller than @math{@MPRIAabs{@var{op2}}}.
+Its behaviour remains undefined if at least one of its arguments is
+either @i{-infinity} (@math{-1/0}),
+@i{+infinity} (@math{+1/0}),
+or @i{NaN} (@math{0/0}).
+@end deftypefun
+
+@deftypefn {Inline Function} void mpria_mpq_min3 (mpq_t @var{rop},@STAR @
+		const mpq_t @var{op1}, const mpq_t @var{op2}, const mpq_t @var{op3})
+Set the value of @var{rop} to the minimum of the triplet @math{@{@var{op1},@var{op2},@var{op3}@}}.
+Its behaviour is undefined if the triplet contains
+@i{-infinity} (@math{-1/0}), @i{+infinity} (@math{+1/0}), or @i{NaN} (@math{0/0}).
+@end deftypefn
+
+@c to confirm (and enhance)
+@c see mpria_mpz_exp_set_str
+@ignore
+@deftypefun int mpria_mpq_set_str (mpq_t @var{rop}, @
+		const char * @var{str}, int @var{base})
+@end deftypefun
+@end ignore
+
+@node Extra Signed Integer Functions
+@section Extra Signed Integer Functions
+@cindex Extra signed integer functions
+@cindex Low-level signed integer functions
+@cindex Signed integer functions
+
+@deftypefn  {Macro} {} MPRIA_MPZ_SET_ZERO (@var{Z})
+@deftypefnx {Macro} {} MPRIA_MPZ_SET_POS_ONE (@var{Z})
+@deftypefnx {Macro} {} MPRIA_MPZ_SET_NEG_ONE (@var{Z})
+Set the value of the signed integer @var{Z} to @code{0}, @code{+1} and @code{-1},
+respectively.
+These utility functions are implemented as plain macros (with self-explanatory names).
+@end deftypefn
+
+@deftypefn  {Macro} {} MPRIA_MPZ_IS_ZERO (@var{Z})
+@deftypefnx {Macro} {} MPRIA_MPZ_IS_NONZERO (@var{Z})
+@deftypefnx {Macro} {} MPRIA_MPZ_IS_POSITIVE (@var{Z})
+@deftypefnx {Macro} {} MPRIA_MPZ_IS_NEGATIVE (@var{Z})
+@deftypefnx {Macro} {} MPRIA_MPZ_IS_STRICTLY_POSITIVE (@var{Z})
+@deftypefnx {Macro} {} MPRIA_MPZ_IS_STRICTLY_NEGATIVE (@var{Z})
+Return @code{1}
+(read @i{true})
+if the signed integer @var{Z}
+is either zero, nonzero, positive, negative, strictly positive or strictly negative,
+respectively,
+and
+@code{0}
+(read @i{false})
+otherwise.
+These test functions are plain macro functions (with self-explanatory names).
+@end deftypefn
+
+@deftypefn {Inline Function} int mpria_mpz_sgn (const mpz_t @var{op})
+Return @code{+1} if the signed integer @var{op} is strictly positive,
+@code{0} if it is zero,
+or @code{-1} if it is strictly negative.
+@*
+While its counterpart @code{mpz_sgn} is implemented as a macro,
+this function is implemented as an inline function:
+it evaluates its argument only once.
+@end deftypefn
+
+@deftypefn {Inline Function} void mpria_mpz_minabs3 (mpz_t @var{rop},@STAR @
+		const mpz_t @var{op1}, const mpz_t @var{op2}, const mpz_t @var{op3})
+Set the value of @var{rop} to the minimum of the triplet
+@math{@{@MPRIAabs{@var{op1}},@MPRIAabs{@var{op2}},@MPRIAabs{@var{op3}}@}}.
+@end deftypefn
+
+@c to confirm (and enhance)
+@c see mpria_mpq_set_str
+@ignore
+@deftypefun int mpria_mpz_exp_set_str (mpz_t @var{rop},@STAR @
+		unsigned long int * @var{exponent}, const char * @var{str}, int @var{base})
+@end deftypefun
+@end ignore
+
+@node General Library Functions
+@chapter General Library Functions
+@cindex General library functions
+
+@menu
+* Library Version Handling::
+* Miscellaneous Utilities::
+@end menu
+
+@node Library Version Handling
+@section Library Version Handling
+@cindex Library version handling
+@cindex Version numbers
+
+Different releases of the GNU MPRIA library are distinguished
+by an @strong{authoritative} version triplet of nonnegative integer constants
+defined as macro constants.
+@c
+Utilities are implemented to efficiently check against,
+to numerically pack or to stringify this triplet;
+packed variants of the triplet are also defined as macro constants.
+
+@defvr  {Macro} MPRIA_VERSION_MAJOR
+@defvrx {Macro} MPRIA_VERSION_MINOR
+@defvrx {Macro} MPRIA_VERSION_MICRO
+@cindex Version triplet
+@cindex Major version number
+@cindex Minor version number
+@cindex Micro version number
+@cindex Revision number
+@cindex Major patch level
+The @strong{authoritative} version triplet, respectively,
+as nonnegative integer constants:
+the major version number,
+the minor version number (or revision number),
+the micro version number (or major patch level).
+@end defvr
+
+@deftypefun void mpria_libversion_get_numbers (@STAR @
+		int * @var{major}, int * @var{minor}, int * @var{micro})
+Retrieve the @var{major}, @var{minor} and @var{micro} version numbers
+of the MPRIA library against which the application is currently linked.
+The @code{NULL} pointer is accepted as argument.
+@end deftypefun
+
+@deftypefun int mpria_libversion_check_numbers (int @var{major}, int @var{minor}, int @var{micro})
+Check the compatibility of the arbitrary @var{major}, @var{minor} and @var{micro} version numbers
+with their counterpart from the MPRIA library against which the application is currently linked.
+The returned response is as follows:
+@itemize
+@item 0 if the two version triplets are not compatible (incompatibility);
+@item 1 if they are compatible and exactly the same (strict or strong compatibility);
+@item 2 if they are compatible but not exactly the same (weak compatibility).
+@end itemize
+This function performs no action apart from checking and responding,
+in particular it does not cause the application to @code{abort}
+or to show up any kind of messages
+(it may be enwrapped within a @code{if else} statement to do so).
+@end deftypefun
+
+@deftypefn {Macro} int mpria_libversion_check (void)
+Check the compatibility of the version triplet of the MPRIA library
+with which an application was compiled with the version triplet of the MPRIA library
+against which the application is currently linked.
+This is a convenient wrapping macro that passes the authoritative macro version numbers
+to the function @code{mpria_libversion_check_numbers},
+as such it acts similarly.
+The most common cause for an incompatibility or a weak compatibility is that
+an application was compiled against one version of the MPRIA library
+while it is dynamically linked against a different one,
+what might be due to a misconfiguration, a downgrading or an upgrading.
+A typical usage may look like:
+@example
+/* Check version of libmpria */
+if (!(mpria_libversion_check ()))
+@{
+  fprintf (stderr,"version miss-compatibility\n");
+  fflush (stderr);
+  abort ();
+@}
+@end example
+@end deftypefn
+
+@defvr {Macro} MPRIA_VERSION_EXTRA
+The extra version string suffix, only meant for development purposes.
+For production releases, @i{alpha} and @i{stable} ones, it must be reset to the empty string "".
+@end defvr
+
+@deftypefn  {Macro} {} MPRIA_VERSION_NUMBER_PACK (@var{Major}, @var{Minor}, @var{Micro})
+@deftypefnx {Macro} {} MPRIA_VERSION_STRING_PACK (@var{Major}, @var{Minor}, @var{Micro}, @var{StrExtra})
+Compact, respectively stringify,
+the arbitrary version triplet @math{[@var{Major}, @var{Minor}, @var{Micro}]}
+into a single number,
+resp. into a null-terminated string to which is appended
+the arbitrary extra version string suffix @var{StrExtra}.
+@end deftypefn
+
+@defvr  {Macro} MPRIA_VERSION_NUMBER
+@defvrx {Macro} MPRIA_VERSION_STRING
+@cindex Compacted version triplet
+@cindex Stringified version triplet
+@cindex Version number
+@cindex Version string
+The @i{non-authoritative} version number, respectively string,
+obtained by passing the @strong{authoritative} version triplet
+to @code{MPRIA_VERSION_NUMBER_PACK},
+resp. to @code{MPRIA_VERSION_STRING_PACK}
+with @code{MPRIA_VERSION_EXTRA} as fourth argument.
+@end defvr
+
+@deftypefun int mpria_libversion_get_number (void)
+@deftypefunx {const char *} mpria_libversion_get_string (void)
+Retrieve the @i{non-authoritative} version number and string, respectively,
+of the MPRIA library against which the application is currently linked.
+@end deftypefun
+
+@deftypevr  {Macro} {const char *} mpria_libversion
+@deftypevrx {Macro} {const char *} mpria_version
+The version string of the MPRIA library against which the application is currently linked.
+While @code{mpria_libversion} is a convenient macro that wraps @code{mpria_libversion_get_string},
+@code{mpria_version} is defined as synonymous of @code{mpria_libversion}
+with respect to the GNU MP naming scheme.
+@end deftypevr
+
+@node Miscellaneous Utilities
+@section Miscellaneous Utilities
+@cindex Miscellaneous utilities
+
+@deftypefn  {Macro} {} MPRIA_STRINGIFY (@var{Token})
+Stringify @var{Token}.
+@end deftypefn
+
+@c @node Contributors
+@c @appendix Contributors
+@c @cindex Contributors
+
+@node References
+@appendix References
+@cindex References
+
+@quotation Teething Note
+This is clearly a @strong{non-exhaustive} list (in progress) of references.
+@end quotation
+
+@itemize @bullet
+@item
+IEEE-1788, Interval Standard Working Group:
+@display
+@url{http://grouper.ieee.org/groups/1788/}.
+@end display
+@item
+IEEE-754, Standard for Binary Floating-Point Arithmetic:
+@display
+@url{http://grouper.ieee.org/groups/754/}.
+@end display
+@end itemize
+
+@node GNU General Public License
+@appendix GNU General Public License
+@cindex GNU General Public License
+@include gpl.texi
+
+@node GNU Free Documentation License
+@appendix GNU Free Documentation License
+@cindex GNU Free Documentation License
+@include fdl.texi
+
+@node Indices
+@appendix Indices
+
+@menu
+* Concept Index::
+* Type Index::
+* Variable Index::
+* Function Index::
+@end menu
+
+@node Concept Index
+@section Concept Index
+@printindex cp
+
+@iftex
+@sp 8
+@end iftex
+
+@node Type Index
+@section Type Index
+@printindex tp
+
+@node Variable Index
+@section Variable Index
+@printindex vr
+
+@node Function Index
+@section Function Index
+@printindex fn
+
+@iftex
+@page
+@headings off
+@*
+@end iftex
+
+@bye
+
+@c doc/mpria.texi -- Texinfo master file
+@c
+@c MPRIA - GNU Multi-Precision Rational Interval Arithmetic Library
+@c Copyright (C) 2009-2016  Jerome Benoit <jgmbenoit@rezozer.net>
+@c
+@c This file is part of the GNU MPRIA Library.
+@c
+@c The GNU MPRIA Library is free software: you can redistribute it and/or modify it
+@c under the terms of the GNU General Public License as published by
+@c the Free Software Foundation, either version 3 of the License, or
+@c (at your option) any later version.
+@c
+@c The GNU MPRIA Library is distributed in the hope that it will be useful,
+@c but WITHOUT ANY WARRANTY; without even the implied warranty of
+@c MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+@c GNU General Public License for more details.
+@c
+@c You should have received a copy of the GNU General Public License
+@c along with the GNU MPRIA Library.  If not, see <http://www.gnu.org/licenses/>.
+@c
+@c eof

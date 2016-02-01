@@ -1,0 +1,98 @@
+## src/mpria.map -- LD version script
+## MPRIA - GNU Multi-Precision Rational Interval Arithmetic Library
+## Copyright (C) 2009-2016  Jerome Benoit <jgmbenoit@rezozer.net>
+##
+## This file is part of the GNU MPRIA Library.
+##
+## The GNU MPRIA Library is free software: you can redistribute it and/or modify it
+## under the terms of the GNU General Public License as published by
+## the Free Software Foundation, either version 3 of the License, or
+## (at your option) any later version.
+##
+## The GNU MPRIA Library is distributed in the hope that it will be useful,
+## but WITHOUT ANY WARRANTY; without even the implied warranty of
+## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+## GNU General Public License for more details.
+##
+## You should have received a copy of the GNU General Public License
+## along with the GNU MPRIA Library.  If not, see <http://www.gnu.org/licenses/>.
+##
+LIBMPRIA_0.7 {
+global:
+__mpria_z_zero;
+__mpria_z_pos_one;
+__mpria_z_neg_one;
+__mpria_z_pos_two;
+__mpria_z_neg_two;
+__mpria_q_zero;
+__mpria_q_pos_one;
+__mpria_q_neg_one;
+__mpria_q_pos_two;
+__mpria_q_neg_two;
+__mpria_ri_zero;
+__mpria_ri_pos_one;
+__mpria_ri_neg_one;
+mpria_mpz_sgn;
+mpria_mpz_minabs3;
+mpria_mpz_exp_set_str;
+mpria_mpq_sgn;
+mpria_mpq_cmpabs;
+mpria_mpq_min3;
+mpria_mpq_set_str;
+mpria_mpq_is_nan;
+mpria_mpq_is_infinite;
+mpria_mpq_is_finite;
+mpri_init;
+mpri_clear;
+mpri_set;
+mpri_set_qi_z_ASGMT;
+mpri_set_qi_q;
+mpri_set_q;
+mpri_set_d;
+mpri_set_sqrt_q;
+mpri_set_rsqrt_q;
+mpri_swap;
+mpri_diam_abs;
+mpri_diam_rel;
+mpri_diam;
+mpri_mig;
+mpri_mag;
+mpri_mid;
+mpri_urandomm;
+mpri_get_q;
+mpri_get_d;
+mpri_add;
+mpri_sub;
+mpri_mul;
+mpri_div;
+mpri_add_q;
+mpri_sub_q;
+mpri_q_sub;
+mpri_mul_q;
+mpri_mul_2exp;
+mpri_div_q;
+mpri_q_div;
+mpri_div_2exp;
+mpri_neg;
+mpri_abs;
+mpri_inv;
+mpri_sqr;
+mpri_sqrt;
+mpri_rsqrt;
+mpri_2exp_atan;
+mpri_atan;
+mpri_equal;
+mpri_is_zero;
+mpri_is_nonzero;
+mpri_has_zero;
+mpri_hasnot_zero;
+mpri_get_left;
+mpri_get_right;
+mpria_libversion_get_numbers;
+mpria_libversion_get_number;
+mpria_libversion_get_string;
+mpria_libversion_check_numbers;
+
+local: *;
+};
+## eos

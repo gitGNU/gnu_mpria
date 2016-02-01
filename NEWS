@@ -1,0 +1,24 @@
+* Noteworthy changes in release 0.7.3 (2016/01/31) [alpha]
+
+	Documentation licensed under GFDL-1.3+ but using the official
+	text for the "no invariant sections" part.
+
+* Noteworthy changes in release 0.7.2 (2016/01/30) [alpha]
+
+	Add random pick up function mpri_urandomm (finite interval).
+
+* Noteworthy changes in release 0.7.1 (2014/02/03) [alpha]
+
+	Up-to-date documentation in Texinfo format.
+
+	Naming convention rationalised wrt the GMP, MPFR, and MPFI
+	libraries.
+
+	The test tables are no more generated with Maple, which
+	is a commercial Computer Algebra System (CAS), but rather
+	with GAP (Groups, Algorithms and Programming), which is
+	distributed under the GPL-2 license.
+
+* Noteworthy changes in release 0.7.0 (2014/01/04) [beta]
+
+	Initial fork of a owned local library.

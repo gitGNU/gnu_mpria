@@ -1,0 +1,117 @@
+## tests/test_mpri_set_qi_z_ASGMT_table.cg -- GAP master script
+## MPRIA - GNU Multi-Precision Rational Interval Arithmetic Library
+## Copyright (C) 2009-2016  Jerome Benoit <jgmbenoit@rezozer.net>
+##
+## This file is part of the GNU MPRIA Library.
+##
+## The GNU MPRIA Library is free software: you can redistribute it and/or modify it
+## under the terms of the GNU General Public License as published by
+## the Free Software Foundation, either version 3 of the License, or
+## (at your option) any later version.
+##
+## The GNU MPRIA Library is distributed in the hope that it will be useful,
+## but WITHOUT ANY WARRANTY; without even the implied warranty of
+## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+## GNU General Public License for more details.
+##
+## You should have received a copy of the GNU General Public License
+## along with the GNU MPRIA Library.  If not, see <http://www.gnu.org/licenses/>.
+##
+
+MPRIAMasterFileNameComment:=function() return ("not human readable"); end;;
+
+Read("mpria_test.gi");
+if (IsBound(MPRIAMasterFileName) and (MPRIAMasterFileName <> fail)) then
+
+compute_quadratic_irrational_triple:=function(a,bits)
+	local answer;
+	if not(IsFloat(a)) then
+		Error("the first argument must be a float, got ", a);
+	fi;
+	if not(IsPosInt(bits)) then
+		Error("the second argument must be a positive integer, got ", bits);
+	fi;
+	SetFloats(MPFR,bits+16);
+	answer:=Rat(a);
+	answer:=[NumeratorRat(answer),0,DenominatorRat(answer)];
+	return answer;
+end;
+
+listof_bits:=[
+	10,
+	24,
+	53,
+	113,
+	256,
+	512,
+	1024,
+	];
+
+listof_candidate_PiC:=Maximum(listof_bits);
+listof_candidate_PiC:=[
+	QuoInt(listof_candidate_PiC,4),
+	QuoInt(listof_candidate_PiC,2),
+	2*listof_candidate_PiC,
+	4*listof_candidate_PiC,
+	];
+Append(listof_candidate_PiC,listof_bits);
+listof_candidate_PiC:=Set(listof_candidate_PiC);
+Apply(listof_candidate_PiC,b->compute_quadratic_irrational_triple(FLOAT.PI,b));
+
+listof_candidate:=[
+	[+4,0,+2],
+	[+3,9,+2],
+	[+1,9,+2],
+	[+1,5,+2],
+	[+907,821641,+3],
+	[+887,821641,+3],
+	[+887,821641,+448806242393308800],
+	];
+Append(listof_candidate,listof_candidate_PiC);
+
+Compacted(listof_candidate);
+
+Append(listof_candidate,List(listof_candidate,t->9316358251200*t));
+
+Apply(listof_candidate,c->[
+	[+c[1],c[2],+c[3]],
+	[+c[1],c[2],-c[3]],
+	[-c[1],c[2],+c[3]],
+	[-c[1],c[2],-c[3]]
+	]);
+fotsil_candidate:=[];
+Perform(listof_candidate,function(c) Append(fotsil_candidate,c); end);
+listof_candidate:=fotsil_candidate;
+
+## preamble
+MPRIACInputOpen();
+
+## amble
+MPRIACInputWriteTestTableLineBEGIN();
+
+for cdx in listof_candidate do
+	for bits in listof_bits do
+		for surrounding in listof_SurroundingMode do
+			AppendTo(CInputStream,
+				"\t{",
+				SeqStringifyListOfNum(cdx),",",
+				String(bits),",",
+				stringify_SurroundingMode(surrounding),",",
+				SeqStringifyListOfNum(compute_quadratic_irrational_interval(cdx[1],cdx[2],cdx[3],bits,surrounding)),
+				"},\n"
+				);
+		od;
+	od;
+od;
+
+MPRIACInputWriteTestTableLineEND("{NULL,NULL,NULL,0,MPRI_SRND_BCAA,NULL,NULL}");
+
+## postamble
+MPRIACInputClose();
+
+fi;
+QUIT;
+##
+## vim:syntax=gap
+##
+## End of file tests/test_mpri_set_qi_z_ASGMT_table.cg
